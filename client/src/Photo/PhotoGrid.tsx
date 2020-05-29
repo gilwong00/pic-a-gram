@@ -1,19 +1,31 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Photo } from '.'
+import { PhotoItem, IPhoto } from '.';
+import { Loading } from '../UI';
+import { GET_POST } from '../graphql/queries';
+import { useQuery } from '@apollo/react-hooks';
 
 const Grid = styled.div`
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-`;	
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: auto;
+`;
 
 const PhotoGrid: React.FC = () => {
-	return (
-		<Grid>
-			<p>Grid</p>
-		</Grid>
-	)
-}
+  const { loading, error, data } = useQuery(GET_POST);
 
-export default PhotoGrid
+  if (loading) {
+    return <Loading />;
+  }
+
+  return (
+    <Grid>
+      {data.getPosts.map((post: IPhoto) => {
+        return <PhotoItem key={post._id} photo={post} />;
+      })}
+    </Grid>
+  );
+};
+
+export default PhotoGrid;

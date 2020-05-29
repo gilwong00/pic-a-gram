@@ -1,5 +1,5 @@
 export { default as PhotoGrid } from './PhotoGrid';
-export { default as Photo } from './Photo';
+export { default as PhotoItem } from './PhotoItem';
 
 interface IComment {
 	_id: number;
