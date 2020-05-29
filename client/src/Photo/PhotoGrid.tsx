@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Photo } from '.'
 
 const Grid = styled.div`
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-`	
+`;	
 
 const PhotoGrid: React.FC = () => {
 	return (

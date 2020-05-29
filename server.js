@@ -1,17 +1,12 @@
 require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
 const mongoose = require('mongoose');
 const colors = require('colors');
-const routes = require('./routes');
+const typeDefs = require('./typeDefs');
+const resolvers = require('./resolvers');
+const Post = require('./models/Post');
+const Comments = require('./models/Comments');
 const PORT = process.env.PORT || 5000;
-const app = express();
-
-app.use(morgan('combined'));
-app.use(cors());
-app.use(express.json());
-app.use('/api', routes);
+const { ApolloServer } = require('apollo-server');
 
 mongoose.connect(process.env.MONGO_URI);
 mongoose.connection
@@ -20,9 +15,14 @@ mongoose.connection
     console.log(colors.red('error connecting to mongodb:', err))
   );
 
-app.listen(PORT, (err) => {
-  if (err) {
-    console.error(colors.red(err.message));
-  }
-  console.log(colors.green(`Listening on port ${PORT}`));
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: () => {
+    return { Post, Comments };
+  },
 });
+
+server
+  .listen(PORT)
+  .then(({ url }) => console.log(colors.green(`Running on port ${url}`)));
