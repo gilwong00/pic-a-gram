@@ -14,7 +14,7 @@ const Header = styled.h1`
   font-family: 'billabongregular';
   text-align: center;
   font-weight: 100;
-  font-size: 13rem;
+  font-size: 10rem;
   margin: 2rem 0;
   letter-spacing: -1px;
   text-shadow: 0px 4px 0 rgba(18, 86, 136, 0.11);
