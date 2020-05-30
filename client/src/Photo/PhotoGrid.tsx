@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { PhotoItem, IPhoto } from '.';
-import { Loading } from '../UI';
+import { Loading, AddPostButton } from '../UI';
 import { GET_POST } from '../graphql/queries';
 import { useQuery } from '@apollo/react-hooks';
 
@@ -20,11 +20,14 @@ const PhotoGrid: React.FC = () => {
   }
 
   return (
-    <Grid>
-      {data.getPosts.map((post: IPhoto) => {
-        return <PhotoItem key={post._id} photo={post} />;
-      })}
-    </Grid>
+    <>
+      <Grid>
+        {data.getPosts.map((post: IPhoto) => {
+          return <PhotoItem key={post._id} photo={post} />;
+        })}
+      </Grid>
+      <AddPostButton />
+    </>
   );
 };
 
