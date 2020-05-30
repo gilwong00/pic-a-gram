@@ -1,15 +1,16 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 const AddPost = styled.div`
   width: 70px;
   height: 70px;
-  background-color: '#552586';
+  background-color: #552586;
   border-radius: 50%;
   box-shadow: 0 6px 10px 0 #666;
   font-size: 50px;
-  line-height: 70px;
-  color: '#fff';
+  line-height: 65px;
+  color: #fff;
   text-align: center;
   position: fixed;
   right: 50px;
@@ -23,9 +24,11 @@ const AddPost = styled.div`
   }
 `;
 
+
 const AddPostButton: React.FC = () => {
+	const history = useHistory();
   return (
-    <AddPost />
+    <AddPost onClick={() => history.push('/post/add')}>+</AddPost>
   )
 }
 

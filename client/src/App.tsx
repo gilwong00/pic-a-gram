@@ -1,12 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { PhotoGrid } from './Photo';
+import { AddPost } from './Post';
 import styled from 'styled-components';
 import './App.css';
 
 const Viewport = styled.div`
-	max-width: 1200px;
-	margin: 0 auto;
+  max-width: 1200px;
+  margin: 0 auto;
 `;
 
 const Header = styled.h1`
@@ -31,7 +32,8 @@ function App() {
           <Link to='/'>Pic-a-gram</Link>
         </Header>
         <Switch>
-          <Route path='/' component={PhotoGrid} />
+          <Route path='/post/add' component={AddPost} />
+          <Route exact path='/' component={PhotoGrid} />
         </Switch>
       </Router>
     </Viewport>

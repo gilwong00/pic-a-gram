@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { IPhoto } from '.';
@@ -8,31 +8,31 @@ interface IProps {
   photo: IPhoto;
 }
 
+interface Props {
+  hasLikes?: boolean;
+  hasComments?: boolean;
+}
+
 const StyledFigure = styled.figure`
-	width: 260px;
+  width: 260px;
   margin: 0 2rem 2rem 2rem;
   padding: 2rem;
   border: 1px solid lightgray;
   background: white;
   box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.05);
-	position: relative;
+  position: relative;
 `;
 
-const Button = styled.button`
-  border: 2px solid lighten(grey, 90%);
-  background: transparent;
-	width: 48%;
-  display: inline-block;
-  line-height: 2;
-  padding: 5px;
-  text-align: center;
-  font-size: 15px;
-  transition: all 0.2s;
-`;
-
-const ButtonControls = styled.div`
+const ActionsContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
+`;
+
+const ActionButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-right: 10px;
 `;
 
 const Image = styled.img`
@@ -45,26 +45,49 @@ const Image = styled.img`
 const SpeechBubble = styled.span`
   width: 1.5rem;
   height: 1.25rem;
-  background: blue;
+  background: transparent;
   display: inline-block;
   border-radius: 50%;
   position: relative;
+  border: 1px solid black;
+`;
+
+const HeartOption = styled.div<Pick<Props, 'hasLikes'>>`
+  display: inline-block;
+  font-size: 30px;
+  padding-right: 5px;
+  cursor: pointer;
+  color: ${(props: Props) => (props.hasLikes ? 'red' : '')};
 `;
 
 const PhotoItem: React.FC<IProps> = ({ photo }) => {
+  const [likes, setLikes] = useState<number>(photo.likes ?? 0);
   return (
     <StyledFigure>
       <Link to={`/post/${photo._id}`}>
-        <Image src={photo.imageUrl || ''} />
+        <Image src={photo.imageUrl ?? ''} />
       </Link>
       <figcaption>
         <p>{photo.caption}</p>
-        <ButtonControls>
-          <Button>♥ {photo.likes}</Button>
-          <Button>
+        <ActionsContainer>
+          <ActionButton>
+            {likes > 0 ? (
+              <HeartOption hasLikes>♥</HeartOption>
+            ) : (
+              // change this to call an add likes mutation
+              <HeartOption
+                onClick={() => setLikes((prevState) => (prevState += 1))}
+              >
+                ♡
+              </HeartOption>
+            )}
+
+            <span>{photo.likes}</span>
+          </ActionButton>
+          {/* <ActionButton>
             <SpeechBubble /> {photo.comments ? photo.comments.length : 0}
-          </Button>
-        </ButtonControls>
+          </ActionButton> */}
+        </ActionsContainer>
       </figcaption>
     </StyledFigure>
   );
