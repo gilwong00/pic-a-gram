@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { IPhoto } from '.';
+import { INCREMENT_LIKES } from '../graphql/mutations';
 import { useMutation } from '@apollo/react-hooks';
 
 interface IProps {
@@ -61,7 +62,8 @@ const HeartOption = styled.div<Pick<Props, 'hasLikes'>>`
 `;
 
 const PhotoItem: React.FC<IProps> = ({ photo }) => {
-  const [likes, setLikes] = useState<number>(photo.likes ?? 0);
+  const [incrementLikes] = useMutation(INCREMENT_LIKES);
+
   return (
     <StyledFigure>
       <Link to={`/post/${photo._id}`}>
@@ -71,16 +73,16 @@ const PhotoItem: React.FC<IProps> = ({ photo }) => {
         <p>{photo.caption}</p>
         <ActionsContainer>
           <ActionButton>
-            {likes > 0 ? (
-              <HeartOption hasLikes>♥</HeartOption>
+            {/* look to improve this */}
+            {photo.likes > 0 ? (
+              <HeartOption hasLikes onClick={() => incrementLikes({ variables: { id: photo._id } })}>♥</HeartOption>
             ) : (
-              // change this to call an add likes mutation
-              <HeartOption
-                onClick={() => setLikes((prevState) => (prevState += 1))}
-              >
-                ♡
-              </HeartOption>
-            )}
+                <HeartOption
+                  onClick={() => incrementLikes({ variables: { id: photo._id } })}
+                >
+                  ♡
+                </HeartOption>
+              )}
 
             <span>{photo.likes}</span>
           </ActionButton>

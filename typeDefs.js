@@ -27,6 +27,7 @@ module.exports = gql`
   }
 
   type Mutation {
-    createPost(input: CreatePostInput!): Post
+    createPost(input: CreatePostInput!): Post,
+    incrementLikes(id: String!) : Post
   }
 `;
