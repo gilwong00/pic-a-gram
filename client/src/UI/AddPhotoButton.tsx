@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-const AddPost = styled.div`
+const AddPhoto = styled.div`
   width: 70px;
   height: 70px;
   background-color: #552586;
@@ -25,11 +25,11 @@ const AddPost = styled.div`
 `;
 
 
-const AddPostButton: React.FC = () => {
+const AddPhotoButton: React.FC = () => {
 	const history = useHistory();
   return (
-    <AddPost onClick={() => history.push('/post/add')}>+</AddPost>
+    <AddPhoto onClick={() => history.push('/photo/add')}>+</AddPhoto>
   )
 }
 
-export default AddPostButton
+export default AddPhotoButton;
