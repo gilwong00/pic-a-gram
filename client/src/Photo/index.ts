@@ -9,8 +9,7 @@ interface IComment {
 }
 
 export interface IPhoto {
-	_id: number;
-	name: string;
+	_id?: number;
 	caption: string;
 	likes: number;
 	imageUrl?: string;
