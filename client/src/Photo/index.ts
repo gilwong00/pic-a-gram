@@ -9,10 +9,10 @@ interface IComment {
 }
 
 export interface IPhoto {
-	_id: number;
+	_id?: number;
 	name: string;
 	caption: string;
-	likes: number;
+	likes?: number;
 	imageUrl?: string;
 	comments?: [IComment]
 }
