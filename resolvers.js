@@ -1,28 +1,46 @@
 module.exports = {
   Query: {
-    getPosts: async (root, args, ctx) => {
-      const { Post } = ctx;
-      const posts = await Post.find({});
-      return posts;
+    getPhotos: async () => {
+      const { Photo } = ctx;
+      const photos = await Photo.find({});
+      return photos;
     },
+
+    getPhoto: async (_, args, ctx) => {
+      const { Photo } = ctx;
+      const query = { _id: args.id }
+      return await Photo.find(query).populate({ path: 'comments', model: 'Comment' });
+    }
   },
 
   Mutation: {
-    createPost: async (root, args, ctx) => {
-      const { Post } = ctx;
-      const newPost = new Post({ ...args.input }).save();
-      return newPost;
+    addNewPhoto: async (_, args, ctx) => {
+      const { Photo } = ctx;
+      const newPhoto = new Photo({ ...args.input }).save();
+      return newPhoto;
     },
 
-    incrementLikes: async (root, args, ctx) => {
-      const { Post } = ctx;
+    incrementLikes: async (_, args, ctx) => {
+      const { Photo } = ctx;
       const query = {
         _id: args.id
       };
 
-      return await Post.findOneAndUpdate(
+      return await Photo.findOneAndUpdate(
         query,
         { $inc: { likes: 1 } },
+        { new: true }
+      );
+    },
+
+    updatePhoto: async (_, args, ctx) => {
+      const { Photo } = ctx;
+      const query = { _id: args.input.id };
+      return await Photo.findOneAndUpdate(
+        query, 
+        { 
+          $set: { caption: args.input.caption, imageUrl: args.input.imageUrl }
+        }, 
         { new: true }
       );
     }

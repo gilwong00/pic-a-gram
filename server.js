@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const colors = require('colors');
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
-const Post = require('./models/Post');
+const Photo = require('./models/Photo');
 const Comments = require('./models/Comments');
 const PORT = process.env.PORT || 5000;
 const { ApolloServer } = require('apollo-server');
@@ -19,7 +19,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: () => {
-    return { Post, Comments };
+    return { Photo, Comments };
   },
 });
 

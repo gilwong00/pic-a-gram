@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import { ADD_NEW_PHOTO } from '../graphql/mutations';
 import { useMutation } from '@apollo/react-hooks';
 import { IPhoto } from '.';
 import { FileUpload } from '../UI';
@@ -60,9 +61,9 @@ const Label = styled.label<ILabelProps>`
 
   ${Input}:valid ~ & {
     top: ${(props: ILabelProps) =>
-      props.text && props.text.length > 0 ? '-20px' : '0px'};
+    props.text && props.text.length > 0 ? '-20px' : '0px'};
     font-size: ${(props: ILabelProps) =>
-      props.text && props.text.length > 0 ? '14px' : '18px'};
+    props.text && props.text.length > 0 ? '14px' : '18px'};
   }
 `;
 // move these to their own file
@@ -100,13 +101,14 @@ const ButtonLabel = styled.span`
 
 const Photo: React.FC<IProps> = ({ photo }) => {
   const history = useHistory();
+  const [addNewPhoto] = useMutation(ADD_NEW_PHOTO);
   const [picture, setPicture] = useState<Omit<IPhoto, 'likes'>>(
     photo
       ? photo
       : {
-          caption: '',
-          imageUrl: '',
-        }
+        caption: '',
+        imageUrl: '',
+      }
   );
 
   const convertToBase65 = (file: Blob) =>
@@ -139,8 +141,14 @@ const Photo: React.FC<IProps> = ({ photo }) => {
       // dispatch update mutation
     } else {
       // dispatch create mutation
-		}
-		return history.push('/');
+      addNewPhoto({
+        variables: {
+          caption: picture.caption,
+          imageUrl: picture.imageUrl
+        }
+      });
+    }
+    return history.push('/');
   };
 
   return (

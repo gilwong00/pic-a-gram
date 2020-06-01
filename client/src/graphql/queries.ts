@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
-export const GET_POST = gql`
+export const GET_PHOTOS = gql`
 	query {
-		getPosts {
+		getPhotos {
 			_id
 			caption
 			imageUrl

@@ -5,7 +5,7 @@ const commentSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  postId: {
+  photoId: {
     type: mongoose.Schema.Types.ObjectId,
   },
   dateCreated: {
@@ -14,6 +14,6 @@ const commentSchema = mongoose.Schema({
   },
 });
 
-const Post = mongoose.model('Comment', commentSchema);
+const Comment = mongoose.model('Comment', commentSchema);
 
-module.exports = Post;
+module.exports = Comment;
