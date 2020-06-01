@@ -3,7 +3,6 @@ const { gql } = require('apollo-server');
 module.exports = gql`
   type Post {
 		_id: String
-    name: String
     caption: String
     likes: Int
     imageUrl: String
@@ -21,7 +20,6 @@ module.exports = gql`
   }
 
   input CreatePostInput {
-    name: String
     caption: String
     imageUrl: String
   }

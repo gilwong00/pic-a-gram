@@ -26,7 +26,7 @@ const StyledFigure = styled.figure`
 
 const ActionsContainer = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
 `;
 
 const ActionItem = styled.div`
@@ -51,12 +51,11 @@ const HeartOption = styled.div<Pick<Props, 'hasLikes'>>`
   color: ${(props: Props) => (props.hasLikes ? 'red' : '')};
 `;
 
-const CommentOption = styled.div`
-  border: none;
-  background: transparent;
+const SpeechOption = styled.div`
+  font-size: 25px;
+  padding-right: 7px;
   cursor: pointer;
 `;
-
 const PhotoItem: React.FC<IProps> = ({ photo }) => {
   const [incrementLikes] = useMutation(INCREMENT_LIKES);
 
@@ -69,15 +68,21 @@ const PhotoItem: React.FC<IProps> = ({ photo }) => {
         <p>{photo.caption}</p>
         <ActionsContainer>
           <ActionItem>
-            <HeartOption hasLikes={photo.likes > 0} onClick={() => incrementLikes({ variables: { id: photo._id } })}>
+            <HeartOption
+              hasLikes={photo.likes > 0}
+              onClick={() => incrementLikes({ variables: { id: photo._id } })}
+            >
               {photo.likes > 0 ? '♥' : '♡'}
             </HeartOption>
             <span>{photo.likes}</span>
           </ActionItem>
           <ActionItem>
-            <CommentOption onClick={() => console.log('hit')}>
-              <span role='img' aria-label='speech'>💬 {photo.comments?.length}</span>
-            </CommentOption>
+            <SpeechOption onClick={() => console.log('hit')}>
+              <span role='img' aria-label='speech'>
+                💬
+              </span>
+            </SpeechOption>
+            <span>{photo.comments?.length}</span>
           </ActionItem>
         </ActionsContainer>
       </figcaption>
