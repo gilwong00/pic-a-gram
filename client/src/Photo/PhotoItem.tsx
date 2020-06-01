@@ -69,10 +69,10 @@ const PhotoItem: React.FC<IProps> = ({ photo }) => {
         <ActionsContainer>
           <ActionItem>
             <HeartOption
-              hasLikes={photo.likes > 0}
+              hasLikes={photo.likes && photo.likes > 0 ? true : false}
               onClick={() => incrementLikes({ variables: { id: photo._id } })}
             >
-              {photo.likes > 0 ? '♥' : '♡'}
+              {photo.likes && photo.likes > 0 ? '♥' : '♡'}
             </HeartOption>
             <span>{photo.likes}</span>
           </ActionItem>

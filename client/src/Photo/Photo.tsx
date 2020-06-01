@@ -1,11 +1,16 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/react-hooks';
 import { IPhoto } from '.';
 import { FileUpload } from '../UI';
 
 interface IProps {
   photo: IPhoto | null;
+}
+
+interface ILabelProps {
+  text: string;
 }
 
 const PostForm = styled.form`
@@ -17,6 +22,7 @@ const PostForm = styled.form`
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 `;
 
+// move these to their own file
 const Fieldset = styled.div`
   position: relative;
   margin-top: 50px;
@@ -36,7 +42,7 @@ const Input = styled.input`
   }
 `;
 
-const Label = styled.label`
+const Label = styled.label<ILabelProps>`
   color: #552586;
   font-size: 18px;
   font-weight: normal;
@@ -51,7 +57,15 @@ const Label = styled.label`
     font-size: 14px;
     color: #5264ae;
   }
+
+  ${Input}:valid ~ & {
+    top: ${(props: ILabelProps) =>
+      props.text && props.text.length > 0 ? '-20px' : '0px'};
+    font-size: ${(props: ILabelProps) =>
+      props.text && props.text.length > 0 ? '14px' : '18px'};
+  }
 `;
+// move these to their own file
 
 const Button = styled.button`
   position: relative;
@@ -84,14 +98,15 @@ const ButtonLabel = styled.span`
   font-size: 16px;
 `;
 
-const Post: React.FC<IProps> = ({ photo }) => {
+const Photo: React.FC<IProps> = ({ photo }) => {
+  const history = useHistory();
   const [picture, setPicture] = useState<Omit<IPhoto, 'likes'>>(
     photo
       ? photo
       : {
-        caption: '',
-        imageUrl: '',
-      }
+          caption: '',
+          imageUrl: '',
+        }
   );
 
   const convertToBase65 = (file: Blob) =>
@@ -109,7 +124,7 @@ const Post: React.FC<IProps> = ({ photo }) => {
       return setPicture({ ...picture, imageUrl });
     }
 
-    setPicture({
+    return setPicture({
       ...picture,
       [e.target.name]: e.target.value,
     });
@@ -119,20 +134,22 @@ const Post: React.FC<IProps> = ({ photo }) => {
     e.preventDefault();
 
     // perform validation
-
+    console.log('picturesss', picture);
     if (photo) {
       // dispatch update mutation
     } else {
       // dispatch create mutation
-    }
+		}
+		return history.push('/');
   };
-
-
 
   return (
     <PostForm onSubmit={handleAddEdit}>
       <Fieldset>
-        <FileUpload imageSrc={photo?.imageUrl} handleImage={handleChange} />
+        <FileUpload
+          imageSrc={picture?.imageUrl ?? ''}
+          handleImage={handleChange}
+        />
       </Fieldset>
       <Fieldset>
         <Input
@@ -142,7 +159,9 @@ const Post: React.FC<IProps> = ({ photo }) => {
           onChange={handleChange}
           type='text'
         />
-        <Label htmlFor='caption'>Caption</Label>
+        <Label htmlFor='caption' text={picture.caption}>
+          Caption
+        </Label>
       </Fieldset>
       <Button type='submit'>
         <ButtonLabel>{photo ? 'Update' : 'Add'}</ButtonLabel>
@@ -151,4 +170,4 @@ const Post: React.FC<IProps> = ({ photo }) => {
   );
 };
 
-export default Post;
+export default Photo;
