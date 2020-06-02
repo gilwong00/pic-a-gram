@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { PhotoItem, IPhoto } from '.';
 import { Loading, AddPhotoButton } from '../UI';
 import { GET_PHOTOS } from '../graphql/queries';
-import { useQuery } from '@apollo/react-hooks';
+import { useLazyQuery } from '@apollo/react-hooks';
 
 const Grid = styled.div`
   display: flex;
@@ -13,7 +13,11 @@ const Grid = styled.div`
 `;
 
 const PhotoGrid: React.FC = () => {
-  const { loading, error, data } = useQuery(GET_PHOTOS);
+  const [getPhotos, { loading, data }] = useLazyQuery(GET_PHOTOS);
+
+  useEffect(() => {
+    getPhotos();
+  }, [getPhotos]);
 
   if (loading) {
     return <Loading />;
@@ -21,11 +25,13 @@ const PhotoGrid: React.FC = () => {
 
   return (
     <>
-      <Grid>
-        {data.getPhotos.map((photo: IPhoto) => {
-          return <PhotoItem key={photo._id} photo={photo} />;
-        })}
-      </Grid>
+      {data && data.getPhotos && (
+        <Grid>
+          {data.getPhotos.map((photo: IPhoto) => {
+            return <PhotoItem key={photo._id} photo={photo} />;
+          })}
+        </Grid>
+      )}
       <AddPhotoButton />
     </>
   );

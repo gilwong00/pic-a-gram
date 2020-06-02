@@ -40,7 +40,8 @@ const Image = styled.img`
   width: calc(100% + 4rem);
   margin-left: -2rem;
   margin-top: -2rem;
-  max-width: none;
+	max-width: none;
+	min-height: 324px;
 `;
 
 const HeartOption = styled.div<Pick<Props, 'hasLikes'>>`

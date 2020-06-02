@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
-import { GET_PHOTOS } from '../graphql/queries'
+import { GET_PHOTOS } from '../graphql/queries';
 import { ADD_NEW_PHOTO } from '../graphql/mutations';
 import { useMutation } from '@apollo/react-hooks';
 import { IPhoto } from '.';
@@ -62,9 +62,9 @@ const Label = styled.label<ILabelProps>`
 
   ${Input}:valid ~ & {
     top: ${(props: ILabelProps) =>
-    props.text && props.text.length > 0 ? '-20px' : '0px'};
+      props.text && props.text.length > 0 ? '-20px' : '0px'};
     font-size: ${(props: ILabelProps) =>
-    props.text && props.text.length > 0 ? '14px' : '18px'};
+      props.text && props.text.length > 0 ? '14px' : '18px'};
   }
 `;
 // move these to their own file
@@ -103,21 +103,26 @@ const ButtonLabel = styled.span`
 const Photo: React.FC<IProps> = ({ photo }) => {
   const history = useHistory();
   const [addNewPhoto] = useMutation(ADD_NEW_PHOTO, {
-    update(cache, { data: { addNewPhoto } }) {
-      const { getPhotos } = cache.readQuery({ query: GET_PHOTOS });
-      cache.writeQuery({
-        query: GET_PHOTOS,
-        data: { getPhotos: getPhotos.concat([addNewPhoto]) }
-      })
-    }
+    // update(cache, { data: { addNewPhoto } }) {
+    //   const res: any = cache.readQuery({ query: GET_PHOTOS });
+
+    //   cache.writeQuery({
+    //     query: GET_PHOTOS,
+    //     data: { getPhotos: res.getPhotos.concat([addNewPhoto]) },
+    //   });
+    // },
+    awaitRefetchQueries: true,
+    refetchQueries: () => [{ query: GET_PHOTOS }],
+    onCompleted: () => history.push('/'),
   });
+
   const [picture, setPicture] = useState<Omit<IPhoto, 'likes'>>(
     photo
       ? photo
       : {
-        caption: '',
-        imageUrl: '',
-      }
+          caption: '',
+          imageUrl: '',
+        }
   );
 
   const convertToBase65 = (file: Blob) =>
@@ -141,23 +146,21 @@ const Photo: React.FC<IProps> = ({ photo }) => {
     });
   };
 
-  const handleAddEdit = async (e: React.SyntheticEvent) => {
+  const handleAddEdit = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     // perform validation
-    console.log('picturesss', picture);
+
     if (photo) {
       // dispatch update mutation
     } else {
-      // dispatch create mutation
-      await addNewPhoto({
+      addNewPhoto({
         variables: {
           caption: picture.caption,
-          imageUrl: picture.imageUrl
-        }
+          imageUrl: picture.imageUrl,
+        },
       });
     }
-    return history.push('/');
   };
 
   return (
