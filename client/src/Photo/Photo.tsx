@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import { GET_PHOTOS } from '../graphql/queries'
 import { ADD_NEW_PHOTO } from '../graphql/mutations';
 import { useMutation } from '@apollo/react-hooks';
 import { IPhoto } from '.';
@@ -101,7 +102,15 @@ const ButtonLabel = styled.span`
 
 const Photo: React.FC<IProps> = ({ photo }) => {
   const history = useHistory();
-  const [addNewPhoto] = useMutation(ADD_NEW_PHOTO);
+  const [addNewPhoto] = useMutation(ADD_NEW_PHOTO, {
+    update(cache, { data: { addNewPhoto } }) {
+      const { getPhotos } = cache.readQuery({ query: GET_PHOTOS });
+      cache.writeQuery({
+        query: GET_PHOTOS,
+        data: { getPhotos: getPhotos.concat([addNewPhoto]) }
+      })
+    }
+  });
   const [picture, setPicture] = useState<Omit<IPhoto, 'likes'>>(
     photo
       ? photo
@@ -132,7 +141,7 @@ const Photo: React.FC<IProps> = ({ photo }) => {
     });
   };
 
-  const handleAddEdit = (e: React.SyntheticEvent) => {
+  const handleAddEdit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     // perform validation
@@ -141,7 +150,7 @@ const Photo: React.FC<IProps> = ({ photo }) => {
       // dispatch update mutation
     } else {
       // dispatch create mutation
-      addNewPhoto({
+      await addNewPhoto({
         variables: {
           caption: picture.caption,
           imageUrl: picture.imageUrl

@@ -1,6 +1,6 @@
 module.exports = {
   Query: {
-    getPhotos: async () => {
+    getPhotos: async (_, args, ctx) => {
       const { Photo } = ctx;
       const photos = await Photo.find({});
       return photos;
