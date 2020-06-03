@@ -13,3 +13,17 @@ export const GET_PHOTOS = gql`
 		}
 	}
 `;
+
+export const GET_PHOTO = gql`
+	query($id: String!) {
+		getPhoto(id: $id) {
+			_id
+			caption
+			imageUrl
+			likes
+			comments {
+				body
+			}
+		}
+	}
+`

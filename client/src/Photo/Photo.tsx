@@ -1,21 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
-import { GET_PHOTOS } from '../graphql/queries';
+import { useHistory, useParams } from 'react-router-dom';
+import { GET_PHOTOS, GET_PHOTO } from '../graphql/queries';
 import { ADD_OR_UPDATE_PHOTO } from '../graphql/mutations';
 import { useMutation } from '@apollo/react-hooks';
+import { useLazyQuery } from '@apollo/react-hooks';
 import { IPhoto } from '.';
-import { FileUpload } from '../UI';
-
-interface IProps {
-  photo: IPhoto | null;
-}
+import { FileUpload, Loading } from '../UI';
 
 interface ILabelProps {
   text: string;
 }
 
-const PostForm = styled.form`
+const PhotoForm = styled.form`
   width: 450px;
   display: flex;
   flex-direction: column;
@@ -62,9 +59,9 @@ const Label = styled.label<ILabelProps>`
 
   ${Input}:valid ~ & {
     top: ${(props: ILabelProps) =>
-    props.text && props.text.length > 0 ? '-20px' : '0px'};
+      props.text && props.text.length > 0 ? '-20px' : '0px'};
     font-size: ${(props: ILabelProps) =>
-    props.text && props.text.length > 0 ? '14px' : '18px'};
+      props.text && props.text.length > 0 ? '14px' : '18px'};
   }
 `;
 // move these to their own file
@@ -100,8 +97,19 @@ const ButtonLabel = styled.span`
   font-size: 16px;
 `;
 
-const Photo: React.FC<IProps> = ({ photo }) => {
+const Photo: React.FC = () => {
+  const [picture, setPicture] = useState<Omit<IPhoto, 'likes'>>({
+    caption: '',
+    imageUrl: '',
+  });
+
   const history = useHistory();
+  const { id } = useParams();
+  const [getPhoto, { loading }] = useLazyQuery(GET_PHOTO, {
+    onCompleted: (data) => {
+      setPicture(data.getPhoto);
+    },
+  });
   const [addOrUpdatePhoto] = useMutation(ADD_OR_UPDATE_PHOTO, {
     // update(cache, { data: { addNewPhoto } }) {
     //   const res: any = cache.readQuery({ query: GET_PHOTOS });
@@ -116,14 +124,11 @@ const Photo: React.FC<IProps> = ({ photo }) => {
     onCompleted: () => history.push('/'),
   });
 
-  const [picture, setPicture] = useState<Omit<IPhoto, 'likes'>>(
-    photo
-      ? photo
-      : {
-        caption: '',
-        imageUrl: '',
-      }
-  );
+  useEffect(() => {
+    if (id) {
+      getPhoto({ variables: { id } });
+    }
+  }, [id, getPhoto]);
 
   const convertToBase65 = (file: Blob) =>
     new Promise((resolve, reject) => {
@@ -150,40 +155,51 @@ const Photo: React.FC<IProps> = ({ photo }) => {
     e.preventDefault();
 
     // perform validation
-
+    const variables =
+      picture && picture._id
+        ? {
+            id: picture._id,
+            caption: picture.caption,
+            imageUrl: picture.imageUrl,
+          }
+        : { caption: picture.caption, imageUrl: picture.imageUrl };
     addOrUpdatePhoto({
-      variables: {
-        id: picture._id,
-        caption: picture.caption,
-        imageUrl: picture.imageUrl,
-      },
+      variables,
     });
   };
 
   return (
-    <PostForm onSubmit={handleAddEdit}>
-      <Fieldset>
-        <FileUpload
-          imageSrc={picture?.imageUrl ?? ''}
-          handleImage={handleChange}
-        />
-      </Fieldset>
-      <Fieldset>
-        <Input
-          id='caption'
-          name='caption'
-          value={picture.caption}
-          onChange={handleChange}
-          type='text'
-        />
-        <Label htmlFor='caption' text={picture.caption}>
-          Caption
-        </Label>
-      </Fieldset>
-      <Button type='submit'>
-        <ButtonLabel>{photo ? 'Update' : 'Add'}</ButtonLabel>
-      </Button>
-    </PostForm>
+    <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <PhotoForm onSubmit={handleAddEdit}>
+          <Fieldset>
+            <FileUpload
+              imageSrc={picture?.imageUrl ?? ''}
+              handleImage={handleChange}
+            />
+          </Fieldset>
+          <Fieldset>
+            <Input
+              id='caption'
+              name='caption'
+              value={picture.caption}
+              onChange={handleChange}
+              type='text'
+            />
+            <Label htmlFor='caption' text={picture.caption}>
+              Caption
+            </Label>
+          </Fieldset>
+          <Button type='submit'>
+            <ButtonLabel>
+              {picture && picture._id ? 'Update' : 'Add'}
+            </ButtonLabel>
+          </Button>
+        </PhotoForm>
+      )}
+    </>
   );
 };
 

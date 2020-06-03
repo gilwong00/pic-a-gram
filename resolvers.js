@@ -8,9 +8,13 @@ module.exports = {
 
     getPhoto: async (_, args, ctx) => {
       const { Photo } = ctx;
-      const query = { _id: args.id }
-      return await Photo.find(query).populate({ path: 'comments', model: 'Comment' });
-    }
+      const query = { _id: args.id };
+      
+      return await Photo.findOne(query).populate({
+        path: 'comments',
+        model: 'Comment',
+      });
+    },
   },
 
   Mutation: {
@@ -20,16 +24,18 @@ module.exports = {
 
       if (input.id) {
         const query = { _id: args.input.id };
-        
+
         return await Photo.findOneAndUpdate(
           query,
           {
-            $set: { caption: args.input.caption, imageUrl: args.input.imageUrl }
+            $set: {
+              caption: args.input.caption,
+              imageUrl: args.input.imageUrl,
+            },
           },
           { new: true }
         );
-      }
-      else {
+      } else {
         const newPhoto = new Photo({ ...args.input }).save();
         return newPhoto;
       }
@@ -38,7 +44,7 @@ module.exports = {
     incrementLikes: async (_, args, ctx) => {
       const { Photo } = ctx;
       const query = {
-        _id: args.id
+        _id: args.id,
       };
 
       return await Photo.findOneAndUpdate(
@@ -54,10 +60,10 @@ module.exports = {
       return await Photo.findOneAndUpdate(
         query,
         {
-          $set: { caption: args.input.caption, imageUrl: args.input.imageUrl }
+          $set: { caption: args.input.caption, imageUrl: args.input.imageUrl },
         },
         { new: true }
       );
-    }
+    },
   },
 };
