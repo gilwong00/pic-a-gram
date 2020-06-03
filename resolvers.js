@@ -14,10 +14,25 @@ module.exports = {
   },
 
   Mutation: {
-    addNewPhoto: async (_, args, ctx) => {
+    addOrUpdatePhoto: async (_, args, ctx) => {
       const { Photo } = ctx;
-      const newPhoto = new Photo({ ...args.input }).save();
-      return newPhoto;
+      const { input } = args;
+
+      if (input.id) {
+        const query = { _id: args.input.id };
+        
+        return await Photo.findOneAndUpdate(
+          query,
+          {
+            $set: { caption: args.input.caption, imageUrl: args.input.imageUrl }
+          },
+          { new: true }
+        );
+      }
+      else {
+        const newPhoto = new Photo({ ...args.input }).save();
+        return newPhoto;
+      }
     },
 
     incrementLikes: async (_, args, ctx) => {
@@ -37,10 +52,10 @@ module.exports = {
       const { Photo } = ctx;
       const query = { _id: args.input.id };
       return await Photo.findOneAndUpdate(
-        query, 
-        { 
+        query,
+        {
           $set: { caption: args.input.caption, imageUrl: args.input.imageUrl }
-        }, 
+        },
         { new: true }
       );
     }

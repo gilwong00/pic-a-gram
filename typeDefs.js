@@ -16,6 +16,7 @@ module.exports = gql`
   }
 
   input AddNewPhotoInput {
+    id: String
     caption: String
     imageUrl: String
   }
@@ -32,7 +33,7 @@ module.exports = gql`
   }
 
   type Mutation {
-    addNewPhoto(input: AddNewPhotoInput!): Photo
+    addOrUpdatePhoto(input: AddNewPhotoInput!): Photo
     incrementLikes(id: String!): Photo!
     updatePhoto(input: UpdatePhotoInput!): Photo!
   }

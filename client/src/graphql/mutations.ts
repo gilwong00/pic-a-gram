@@ -14,9 +14,10 @@ export const INCREMENT_LIKES = gql`
   }
 `;
 
-export const ADD_NEW_PHOTO = gql`
-  mutation($caption: String!, $imageUrl: String!) {
-    addNewPhoto(input: {
+export const ADD_OR_UPDATE_PHOTO = gql`
+  mutation($id: String, $caption: String!, $imageUrl: String!) {
+    addOrUpdatePhoto(input: {
+      id: $id,
       caption: $caption,
       imageUrl: $imageUrl
     }) {
