@@ -8,6 +8,10 @@ const commentSchema = mongoose.Schema({
   photoId: {
     type: mongoose.Schema.Types.ObjectId,
   },
+  author: {
+    type: String,
+    required: true
+  },
   dateCreated: {
     type: Date,
     default: new Date().toISOString(),

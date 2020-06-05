@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { IPhoto } from '.';
 import { INCREMENT_LIKES } from '../graphql/mutations';
 import { useMutation } from '@apollo/react-hooks';
@@ -59,10 +59,11 @@ const SpeechOption = styled.div`
 `;
 const PhotoItem: React.FC<IProps> = ({ photo }) => {
   const [incrementLikes] = useMutation(INCREMENT_LIKES);
+  const history = useHistory();
 
   return (
     <StyledFigure>
-      <Link to={`/photo/${photo._id}`}>
+      <Link to={`/photo/${photo._id}/edit`}>
         <Image src={photo.imageUrl ?? ''} />
       </Link>
       <figcaption>
@@ -78,7 +79,7 @@ const PhotoItem: React.FC<IProps> = ({ photo }) => {
             <span>{photo.likes}</span>
           </ActionItem>
           <ActionItem>
-            <SpeechOption onClick={() => console.log('hit')}>
+            <SpeechOption onClick={() => history.push(`/photo/${photo._id}`)}>
               <span role='img' aria-label='speech'>
                 💬
               </span>

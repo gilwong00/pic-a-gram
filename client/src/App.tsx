@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
-import { PhotoGrid, Photo } from './Photo';
+import { PhotoGrid, AddEditPhoto, Photo } from './Photo';
 import styled from 'styled-components';
 import './App.css';
 
@@ -31,7 +31,8 @@ function App() {
           <Link to='/'>Pic-a-gram</Link>
         </Header>
         <Switch>
-          <Route path={[ '/photo/add', '/photo/:id' ]} component={Photo} />
+          <Route path='/photo/:id' component={Photo}/>
+          <Route path={['/photo/add', '/photo/:id/edit']} component={AddEditPhoto} />
           <Route exact path='/' component={PhotoGrid} />
         </Switch>
       </Router>
