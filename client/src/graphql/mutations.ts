@@ -16,11 +16,9 @@ export const INCREMENT_LIKES = gql`
 
 export const ADD_OR_UPDATE_PHOTO = gql`
   mutation($id: String, $caption: String!, $imageUrl: String!) {
-    addOrUpdatePhoto(input: {
-      id: $id,
-      caption: $caption,
-      imageUrl: $imageUrl
-    }) {
+    addOrUpdatePhoto(
+      input: { id: $id, caption: $caption, imageUrl: $imageUrl }
+    ) {
       _id
       caption
       likes
@@ -29,4 +27,15 @@ export const ADD_OR_UPDATE_PHOTO = gql`
       }
     }
   }
-`
+`;
+
+export const ADD_COMMENT = gql`
+  mutation($body: String!, $author: String!, $photoId: ID!) {
+    addComment(input: { body: $body, author: $author, photoId: $photoId }) {
+      _id
+      body
+      author
+      dateCreated
+    }
+  }
+`;

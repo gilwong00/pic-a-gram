@@ -3,10 +3,11 @@ const mongoose = require('mongoose');
 const commentSchema = mongoose.Schema({
   body: {
     type: String,
-    required: true,
+    required: true
   },
   photoId: {
-    type: mongoose.Schema.Types.ObjectId,
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Photo'
   },
   author: {
     type: String,
@@ -14,8 +15,8 @@ const commentSchema = mongoose.Schema({
   },
   dateCreated: {
     type: Date,
-    default: new Date().toISOString(),
-  },
+    default: new Date().toISOString()
+  }
 });
 
 const Comment = mongoose.model('Comment', commentSchema);
