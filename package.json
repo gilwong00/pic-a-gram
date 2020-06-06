@@ -10,7 +10,7 @@
 		"client": "npm run start --prefix client"
 	},
 	"dependencies": {
-		"apollo-server": "^2.14.1",
+		"apollo-server": "^2.14.2",
 		"colors": "^1.4.0",
 		"concurrently": "^5.2.0",
 		"dotenv": "^8.2.0",
