@@ -4,7 +4,7 @@ const colors = require('colors');
 const typeDefs = require('./typeDefs');
 const resolvers = require('./resolvers');
 const Photo = require('./models/Photo');
-const Comments = require('./models/Comments');
+const Comment = require('./models/Comment');
 const PORT = process.env.PORT || 5000;
 const { ApolloServer } = require('apollo-server');
 
@@ -19,7 +19,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: () => {
-    return { Photo, Comments };
+    return { Photo, Comment };
   },
 });
 

@@ -9,12 +9,12 @@ module.exports = {
     getPhoto: async (_, args, ctx) => {
       const { Photo } = ctx;
       const query = { _id: args.id };
-      
+
       return await Photo.findOne(query).populate({
         path: 'comments',
-        model: 'Comment',
+        model: 'Comment'
       });
-    },
+    }
   },
 
   Mutation: {
@@ -30,13 +30,13 @@ module.exports = {
           {
             $set: {
               caption: args.input.caption,
-              imageUrl: args.input.imageUrl,
-            },
+              imageUrl: args.input.imageUrl
+            }
           },
           { new: true }
         );
       } else {
-        const newPhoto = new Photo({ ...args.input }).save();
+        const newPhoto = await new Photo({ ...args.input }).save();
         return newPhoto;
       }
     },
@@ -44,7 +44,7 @@ module.exports = {
     incrementLikes: async (_, args, ctx) => {
       const { Photo } = ctx;
       const query = {
-        _id: args.id,
+        _id: args.id
       };
 
       return await Photo.findOneAndUpdate(
@@ -54,16 +54,14 @@ module.exports = {
       );
     },
 
-    updatePhoto: async (_, args, ctx) => {
-      const { Photo } = ctx;
-      const query = { _id: args.input.id };
-      return await Photo.findOneAndUpdate(
-        query,
-        {
-          $set: { caption: args.input.caption, imageUrl: args.input.imageUrl },
-        },
-        { new: true }
-      );
-    },
-  },
+    addComment: async (_, args, ctx) => {
+      const { Photo, Comment } = ctx;
+      const query = { _id: args.input.photoId };
+      const newComment = await new Comment({ ...args.input }).save();
+      await Photo.findOneAndUpdate(query, {
+        $push: { comments: newComment._id }
+      });
+      return newComment;
+    }
+  }
 };

@@ -2,7 +2,7 @@ const { gql } = require('apollo-server');
 
 module.exports = gql`
   type Photo {
-		_id: String
+    _id: ID
     caption: String
     likes: Int
     imageUrl: String
@@ -10,21 +10,23 @@ module.exports = gql`
   }
 
   type Comment {
+    _id: ID
     body: String
-    photoId: Int
+    author: String
+    photoId: String
     dateCreated: String
   }
 
   input AddNewPhotoInput {
-    id: String
-    caption: String
-    imageUrl: String
+    id: ID
+    caption: String!
+    imageUrl: String!
   }
 
-  input UpdatePhotoInput {
-    _id: String
-    caption: String
-    imageUrl: String
+  input CommentInput {
+    body: String!
+    author: String!
+    photoId: ID!
   }
 
   type Query {
@@ -35,6 +37,6 @@ module.exports = gql`
   type Mutation {
     addOrUpdatePhoto(input: AddNewPhotoInput!): Photo
     incrementLikes(id: String!): Photo!
-    updatePhoto(input: UpdatePhotoInput!): Photo!
+    addComment(input: CommentInput!): Comment!
   }
 `;

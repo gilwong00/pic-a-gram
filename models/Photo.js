@@ -3,20 +3,19 @@ const mongoose = require('mongoose');
 const photoSchema = mongoose.Schema(
   {
     caption: {
-      type: String,
+      type: String
     },
     likes: {
       type: Number,
       required: true,
-      default: 0,
+      default: 0
     },
     imageUrl: {
-      type: String,
+      type: String
     },
     comments: {
-      type: [mongoose.Schema.Types.ObjectId],
-      ref: 'Comment',
-    },
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }]
+    }
   },
   { timestamps: true }
 );

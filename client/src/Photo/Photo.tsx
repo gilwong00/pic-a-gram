@@ -32,7 +32,7 @@ const Image = styled.img`
 const InputContainer = styled.div`
   position: relative;
   padding: 30px;
-  top: 60%;
+  top: 10%;
 `
 
 const Input = styled.input`
@@ -64,7 +64,7 @@ const Photo: React.FC = () => {
             {data.getPhoto.comments.length > 0 ? <CommentsContainer>
               {/* render comments */}
               {data.getPhoto.comments.map((comment: IComment) => {
-                return <p>{comment.body}</p>
+                return <p key={comment._id}>{comment.body}</p>
               })}
             </CommentsContainer> : <p>No comments yet</p>}
 
