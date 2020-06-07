@@ -46,11 +46,7 @@ module.exports = {
         _id: args.id
       };
 
-      return await Photo.findOneAndUpdate(
-        query,
-        { $inc: { likes: 1 } },
-        { new: true }
-      );
+      return await Photo.findOneAndUpdate(query, { $inc: { likes: 1 } });
     },
 
     addComment: async (_, args, ctx) => {

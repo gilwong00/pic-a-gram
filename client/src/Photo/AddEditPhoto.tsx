@@ -5,7 +5,7 @@ import { GET_PHOTOS, GET_PHOTO } from '../graphql/queries';
 import { ADD_OR_UPDATE_PHOTO } from '../graphql/mutations';
 import { useMutation, useLazyQuery } from '@apollo/react-hooks';
 import { IPhoto } from '.';
-import { FileUpload, Loading } from '../UI';
+import { FileUpload, Loading, Button, ButtonLabel } from '../UI';
 
 interface ILabelProps {
   text: string;
@@ -63,43 +63,11 @@ const Label = styled.label<ILabelProps>`
       props.text && props.text.length > 0 ? '14px' : '18px'};
   }
 `;
-// move these to their own file
-
-const Button = styled.button`
-  position: relative;
-  display: block;
-  margin: 30px auto;
-  padding: 0;
-  overflow: hidden;
-  border-width: 0;
-  outline: none;
-  border-radius: 2px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
-  background-color: #ff1744;
-  color: #ecf0f1;
-  transition: background-color 0.3s;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #ff1744;
-  }
-
-  &:focus {
-    background-color: #ff1744;
-  }
-`;
-
-const ButtonLabel = styled.span`
-  display: block;
-  padding: 12px 24px;
-  color: #fff;
-  font-size: 16px;
-`;
 
 const AddEditPhoto: React.FC = () => {
   const [picture, setPicture] = useState<Omit<IPhoto, 'likes'>>({
     caption: '',
-    imageUrl: '',
+    imageUrl: ''
   });
 
   const history = useHistory();
@@ -107,20 +75,20 @@ const AddEditPhoto: React.FC = () => {
   const [getPhoto, { loading }] = useLazyQuery(GET_PHOTO, {
     onCompleted: (data) => {
       setPicture(data.getPhoto);
-    },
+    }
   });
   const [addOrUpdatePhoto] = useMutation(ADD_OR_UPDATE_PHOTO, {
-    // update(cache, { data: { addNewPhoto } }) {
+    // update(cache, { data: { addOrUpdatePhoto } }) {
     //   const res: any = cache.readQuery({ query: GET_PHOTOS });
 
     //   cache.writeQuery({
     //     query: GET_PHOTOS,
-    //     data: { getPhotos: res.getPhotos.concat([addNewPhoto]) },
+    //     data: { getPhotos: res.getPhotos.concat([addOrUpdatePhoto]) },
     //   });
     // },
     awaitRefetchQueries: true,
     refetchQueries: () => [{ query: GET_PHOTOS }],
-    onCompleted: () => history.push('/'),
+    onCompleted: () => history.push('/')
   });
 
   useEffect(() => {
@@ -146,24 +114,28 @@ const AddEditPhoto: React.FC = () => {
 
     return setPicture({
       ...picture,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
   };
 
-  const handleAddEdit = (e: React.SyntheticEvent) => {
+  const handleAddEdit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    // perform validation
+    if (!picture.caption && !picture.imageUrl) {
+      return;
+    }
+
     const variables =
       picture && picture._id
         ? {
             id: picture._id,
             caption: picture.caption,
-            imageUrl: picture.imageUrl,
+            imageUrl: picture.imageUrl
           }
         : { caption: picture.caption, imageUrl: picture.imageUrl };
-    addOrUpdatePhoto({
-      variables,
+
+    return await addOrUpdatePhoto({
+      variables
     });
   };
 

@@ -6,13 +6,10 @@ export const GET_PHOTOS = gql`
       _id
       caption
       imageUrl
-      likes
-      comments {
-        _id
-        body
-        author
-        dateCreated
-      }
+      likes,
+			comments {
+				_id
+			}
     }
   }
 `;

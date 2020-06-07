@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { GET_PHOTO } from '../graphql/queries';
 import { ADD_COMMENT } from '../graphql/mutations';
 import { useMutation, useQuery } from '@apollo/react-hooks';
-import { Loading } from '../UI';
+import { Loading, Button, ButtonLabel } from '../UI';
 import { IComment } from '.';
 
 const PhotoContainer = styled.div`
@@ -59,6 +59,11 @@ const Input = styled.input`
   &:focus {
     outline: none;
   }
+`;
+
+const SubmitButton = styled(Button)`
+  margin: 0 35px 0 0;
+  float: right;
 `;
 
 const Photo: React.FC = () => {
@@ -140,9 +145,11 @@ const Photo: React.FC = () => {
                   }
                 }}
               />
+              <SubmitButton onClick={handleSubmit}>
+                <ButtonLabel>Submit</ButtonLabel>
+              </SubmitButton>
             </InputContainer>
           </CommentsSection>
-          {/* <button>Submit</button> */}
         </PhotoContainer>
       )}
     </>
