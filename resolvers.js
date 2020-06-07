@@ -53,9 +53,13 @@ module.exports = {
       const { Photo, Comment } = ctx;
       const query = { _id: args.input.photoId };
       const newComment = await new Comment({ ...args.input }).save();
-      await Photo.findOneAndUpdate(query, {
-        $push: { comments: newComment._id }
-      });
+
+      if (newComment._id) {
+        await Photo.findOneAndUpdate(query, {
+          $push: { comments: newComment._id }
+        });
+      }
+      
       return newComment;
     }
   }

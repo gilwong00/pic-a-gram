@@ -78,7 +78,11 @@ const Photo: React.FC = () => {
 
   const [addComment] = useMutation(ADD_COMMENT, {
     awaitRefetchQueries: true,
-    refetchQueries: () => [{ query: GET_PHOTO, variables: { id } }]
+    refetchQueries: () => [{ query: GET_PHOTO, variables: { id } }],
+    onCompleted: () => {
+      setComment('');
+      setAuthor('');
+    }
   });
 
   const handleSubmit = async () => {
@@ -86,12 +90,9 @@ const Photo: React.FC = () => {
       return;
     }
 
-    await addComment({
+    return await addComment({
       variables: { body: comment, author, photoId: data.getPhoto._id }
     });
-
-    setComment('');
-    setAuthor('');
   };
 
   if (loading) {
