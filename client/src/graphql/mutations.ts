@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export const INCREMENT_LIKES = gql`
-  mutation($id: String!) {
+  mutation($id: ID!) {
     incrementLikes(id: $id) {
       _id
       caption
@@ -15,7 +15,7 @@ export const INCREMENT_LIKES = gql`
 `;
 
 export const ADD_OR_UPDATE_PHOTO = gql`
-  mutation($id: String, $caption: String!, $imageUrl: String!) {
+  mutation($id: ID, $caption: String!, $imageUrl: String!) {
     addOrUpdatePhoto(
       input: { id: $id, caption: $caption, imageUrl: $imageUrl }
     ) {

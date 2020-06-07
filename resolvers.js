@@ -2,8 +2,7 @@ module.exports = {
   Query: {
     getPhotos: async (_, args, ctx) => {
       const { Photo } = ctx;
-      const photos = await Photo.find({});
-      return photos;
+      return await Photo.find({});
     },
 
     getPhoto: async (_, args, ctx) => {

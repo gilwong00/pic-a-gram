@@ -31,8 +31,8 @@ function App() {
           <Link to='/'>Pic-a-gram</Link>
         </Header>
         <Switch>
-          <Route path='/photo/:id' component={Photo}/>
           <Route path={['/photo/add', '/photo/:id/edit']} component={AddEditPhoto} />
+          <Route path='/photo/:id' component={Photo}/>
           <Route exact path='/' component={PhotoGrid} />
         </Switch>
       </Router>

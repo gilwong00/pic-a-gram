@@ -12,33 +12,53 @@ const PhotoContainer = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
+  box-shadow: 0 0 0 12px rgba(0, 0, 0, 0.05);
+  max-width: 910px;
+  margin: 0 auto;
+  border: 1px solid #edeeed;
+`;
+
+const PhotoCaption = styled.p`
+  padding-left: 10px;
 `;
 
 const CommentsSection = styled.div`
-  border: 1px solid black;
   height: 398px;
-  width: 400px;
+  width: 500px;
 `;
 
 const CommentsContainer = styled.div`
-  height: 250px;
-  overflow-y: scroll;
+  max-height: 250px;
+  overflow-y: auto;
+`;
+
+const Comment = styled.div`
+  width: 98%;
+  border-bottom: 1px solid lightgrey;
 `;
 
 const Image = styled.img`
   height: 400px;
+  margin-right: 10px;
 `;
 
 const InputContainer = styled.div`
   position: relative;
-  padding: 30px;
   top: 10%;
 `;
 
-// make these look nicer
 const Input = styled.input`
-  width: 100%;
-  margin: 0 auto;
+  width: 88%;
+  font-size: 14px;
+  padding: 10px 10px 10px 12px;
+  display: block;
+  border: none;
+  border-bottom: 1px solid #757575;
+  margin-bottom: 10px;
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 const Photo: React.FC = () => {
@@ -51,17 +71,22 @@ const Photo: React.FC = () => {
     }
   });
 
-  const [addComment] = useMutation(ADD_COMMENT);
+  const [addComment] = useMutation(ADD_COMMENT, {
+    awaitRefetchQueries: true,
+    refetchQueries: () => [{ query: GET_PHOTO, variables: { id } }]
+  });
 
   const handleSubmit = async () => {
     if (!comment && !author) {
-      // display some error
       return;
     }
 
     await addComment({
       variables: { body: comment, author, photoId: data.getPhoto._id }
     });
+
+    setComment('');
+    setAuthor('');
   };
 
   if (loading) {
@@ -72,19 +97,26 @@ const Photo: React.FC = () => {
     <>
       {data && data.getPhoto && (
         <PhotoContainer>
-          <Image src={data.getPhoto.imageUrl} alt={data.getPhoto._id} />
+          <div>
+            <Image src={data.getPhoto.imageUrl} alt={data.getPhoto._id} />
+            <PhotoCaption>{data.getPhoto.caption}</PhotoCaption>
+          </div>
+
           <CommentsSection>
-            {data.getPhoto.comments.length > 0 ? (
-              <CommentsContainer>
-                {/* render comments */}
-                {data.getPhoto.comments.map((comment: IComment) => {
-                  // make a styled component out of this. display comment, author and date added
-                  return <p key={comment._id}>{comment.body}</p>;
-                })}
-              </CommentsContainer>
-            ) : (
-              <p>No comments yet</p>
-            )}
+            <CommentsContainer>
+              {data.getPhoto.comments.map((comment: IComment) => {
+                return (
+                  <Comment key={comment._id}>
+                    <p>
+                      <strong style={{ padding: '0 10px' }}>
+                        {comment.author}:
+                      </strong>
+                      {comment.body}
+                    </p>
+                  </Comment>
+                );
+              })}
+            </CommentsContainer>
 
             <InputContainer>
               <Input
@@ -98,13 +130,19 @@ const Photo: React.FC = () => {
               <Input
                 type='text'
                 placeholder='Comment'
+                value={comment}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setComment(e.target.value)
                 }
-                value={comment}
+                onKeyDown={async (e: React.KeyboardEvent) => {
+                  if (e.key === 'Enter') {
+                    await handleSubmit();
+                  }
+                }}
               />
             </InputContainer>
           </CommentsSection>
+          {/* <button>Submit</button> */}
         </PhotoContainer>
       )}
     </>

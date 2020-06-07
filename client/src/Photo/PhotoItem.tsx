@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link, useHistory } from 'react-router-dom';
 import { IPhoto } from '.';
 import { INCREMENT_LIKES } from '../graphql/mutations';
+import { GET_PHOTOS } from '../graphql/queries';
 import { useMutation } from '@apollo/react-hooks';
 
 interface IProps {
@@ -40,8 +41,8 @@ const Image = styled.img`
   width: calc(100% + 4rem);
   margin-left: -2rem;
   margin-top: -2rem;
-	max-width: none;
-	min-height: 324px;
+  max-width: none;
+  min-height: 324px;
 `;
 
 const HeartOption = styled.div<Pick<Props, 'hasLikes'>>`
@@ -58,7 +59,10 @@ const SpeechOption = styled.div`
   cursor: pointer;
 `;
 const PhotoItem: React.FC<IProps> = ({ photo }) => {
-  const [incrementLikes] = useMutation(INCREMENT_LIKES);
+  const [incrementLikes] = useMutation(INCREMENT_LIKES, {
+    awaitRefetchQueries: true,
+    refetchQueries: () => [{ query: GET_PHOTOS }]
+  });
   const history = useHistory();
 
   return (
@@ -72,7 +76,7 @@ const PhotoItem: React.FC<IProps> = ({ photo }) => {
           <ActionItem>
             <HeartOption
               hasLikes={photo.likes && photo.likes > 0 ? true : false}
-              onClick={() => incrementLikes({ variables: { id: photo._id } })}
+              onClick={async () => await incrementLikes({ variables: { id: photo._id } })}
             >
               {photo.likes && photo.likes > 0 ? '♥' : '♡'}
             </HeartOption>

@@ -36,7 +36,7 @@ module.exports = gql`
 
   type Mutation {
     addOrUpdatePhoto(input: AddNewPhotoInput!): Photo
-    incrementLikes(id: String!): Photo!
+    incrementLikes(id: ID!): Photo!
     addComment(input: CommentInput!): Comment!
   }
 `;
