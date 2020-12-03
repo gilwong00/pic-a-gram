@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  postgres:
+    build: ./postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: picagram
+    ports:
+      - "5432:5432"
