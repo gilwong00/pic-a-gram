@@ -21,7 +21,7 @@ const startServer = async () => {
     logging: true,
     synchronize: process.env.NODE_ENV !== 'production',
     migrations: [path.join(__dirname, './server/migrations/*')],
-    entities: [User, Post, Image],
+    entities: [User, Post, Image]
   });
 
   await conn.runMigrations();
@@ -32,23 +32,23 @@ const startServer = async () => {
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [HelloResolver],
-      validate: false,
+      validate: false
     }),
     playground: true,
     context: ({ req, res }) => ({
       req,
-      res,
-    }),
+      res
+    })
   });
 
   apolloServer.applyMiddleware({
     app,
-    cors: false,
+    cors: false
   });
 
   app.listen(PORT, () => console.log(colors.green(`running on port ${PORT}`)));
 };
 
-startServer().catch((err) =>
+startServer().catch(err =>
   console.error(colors.red(`Error starting server ${err.message}`))
 );

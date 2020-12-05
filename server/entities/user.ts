@@ -1,44 +1,31 @@
-
 import { ObjectType, Field } from 'type-graphql';
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  Column,
-  BaseEntity,
-  OneToMany
-} from 'typeorm';
-import { Post } from '.';
+import { Entity, Column, OneToMany, BeforeInsert, Index } from 'typeorm';
+import { Post, Base } from '.';
+import { hash } from 'bcryptjs';
 
 @ObjectType()
 @Entity()
-class User extends BaseEntity {
+class User extends Base {
   @Field()
-  @PrimaryGeneratedColumn()
-  id!: number;
-
-  @Field()
+  @Index()
   @Column({ unique: true })
   username!: string;
 
   @Field()
+  @Index()
   @Column({ unique: true })
   email!: string;
 
   @Column()
   password!: string;
 
-  @OneToMany(() => Post, (post) => post.user)
-  posts: Array<Post>
+  @OneToMany(() => Post, post => post.user)
+  posts: Array<Post>;
 
-  @Field(() => String)
-  @CreateDateColumn()
-  created_at: Date;
-
-  @Field(() => String)
-  @UpdateDateColumn()
-  updated_at: Date;
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await hash(this.password, 10);
+  }
 }
 
 export default User;

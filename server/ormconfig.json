@@ -1,10 +1,14 @@
 {
-  "type": "postgres",
-  "host": "localhost",
-  "port": 5432,
-  "username": "postgres",
-  "password": "postgres",
-  "database": "picagram",
-  "entities": ["entities/*.js"],
-  "migrations": ["/migrations/*.js"]
+	"type": "postgres",
+	"host": "localhost",
+	"port": 5432,
+	"username": "postgres",
+	"password": "postgres",
+	"database": "picagram",
+	"entities": [
+		"server/entities/*.js"
+	],
+	"migrations": [
+		"/migrations/*.js"
+	]
 }
