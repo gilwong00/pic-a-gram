@@ -10,7 +10,7 @@ import {
   UpdateDateColumn,
   BaseEntity
 } from 'typeorm';
-import { Post } from '.';
+import { Like, Post } from '.';
 import { hash } from 'bcryptjs';
 
 @ObjectType()
@@ -44,6 +44,9 @@ class User extends BaseEntity {
 
   @OneToMany(() => Post, post => post.user)
   posts: Array<Post>;
+
+  @OneToMany(() => Like, list => list.user_id)
+  likes: Array<Like>;
 
   @BeforeInsert()
   async hashPassword() {

@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import 'dotenv-safe/config';
 import { ApolloServer } from 'apollo-server-express';
 import { createConnection } from 'typeorm';
-import { User, Post, Image } from './server/entities';
+import { User, Post, Image, Like } from './server/entities';
 import { buildSchema } from 'type-graphql';
 import { HelloResolver, UserResolver } from './server/graphql/resolvers';
 import express from 'express';
@@ -22,7 +22,7 @@ const startServer = async () => {
     logging: true,
     synchronize: process.env.NODE_ENV !== 'production',
     migrations: [path.join(__dirname, './server/migrations/*')],
-    entities: [User, Post, Image]
+    entities: [User, Post, Image, Like]
   });
 
   await conn.runMigrations();

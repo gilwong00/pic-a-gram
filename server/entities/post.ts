@@ -45,7 +45,7 @@ class Post extends BaseEntity {
   @JoinColumn({ name: 'photo_id' })
   photo_id: number;
 
-  @OneToMany(() => Like, like => like.id)
+  @OneToMany(() => Like, like => like.post_id)
   likes: Array<Like>;
 }
 

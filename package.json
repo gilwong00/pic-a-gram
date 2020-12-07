@@ -9,7 +9,8 @@
 		"server": "ts-node server.ts",
 		"server:dev": "ts-node-dev server.ts --watch",
 		"client": "npm run start --prefix client",
-		"typeorm": "ts-node ./node_modules/typeorm/cli.js"
+		"typeorm": "ts-node ./node_modules/typeorm/cli.js",
+		"migration:new": "yarn typeorm migration:generate --name"
 	},
 	"dependencies": {
 		"apollo-server": "^2.14.1",
