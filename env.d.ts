@@ -8,5 +8,6 @@ declare namespace NodeJS {
     DATABASE_USER: string;
     DATABASE_PASSWORD: string;
     DATABASE_NAME: string;
+    SESSION_SECRET: string;
   }
 }

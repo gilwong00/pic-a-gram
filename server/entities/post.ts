@@ -1,10 +1,24 @@
 import { ObjectType, Field } from 'type-graphql';
-import { Entity, Column, JoinColumn, OneToOne } from 'typeorm';
-import { User, Image, Base } from '.';
+import {
+  Entity,
+  Column,
+  JoinColumn,
+  OneToOne,
+  OneToMany,
+  BaseEntity,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryGeneratedColumn
+} from 'typeorm';
+import { User, Image, Like } from '.';
 
 @ObjectType()
-@Entity()
-class Post extends Base {
+@Entity('posts')
+class Post extends BaseEntity {
+  @Field()
+  @PrimaryGeneratedColumn()
+  id!: number;
+
   @Field()
   @Column()
   title: string;
@@ -17,11 +31,22 @@ class Post extends Base {
   @Column()
   user_id: number;
 
+  @Field(() => String)
+  @CreateDateColumn()
+  created_at: Date;
+
+  @Field(() => String)
+  @UpdateDateColumn()
+  updated_at: Date;
+
   user: User;
 
   @OneToOne(() => Image, image => image.id)
-  @JoinColumn()
-  photo_id: string;
+  @JoinColumn({ name: 'photo_id' })
+  photo_id: number;
+
+  @OneToMany(() => Like, like => like.id)
+  likes: Array<Like>;
 }
 
 export default Post;

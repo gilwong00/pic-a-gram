@@ -4,8 +4,9 @@ import { ApolloServer } from 'apollo-server-express';
 import { createConnection } from 'typeorm';
 import { User, Post, Image } from './server/entities';
 import { buildSchema } from 'type-graphql';
-import { HelloResolver } from './server/graphql/resolvers';
+import { HelloResolver, UserResolver } from './server/graphql/resolvers';
 import express from 'express';
+import session from 'express-session';
 import path from 'path';
 import cors from 'cors';
 import colors from 'colors';
@@ -27,12 +28,34 @@ const startServer = async () => {
   await conn.runMigrations();
   const app = express();
 
-  app.use(cors());
+  app.set('trust proxy', 1);
+  app.use(
+    cors({
+      credentials: true,
+      origin:
+        process.env.NODE_ENV === 'production'
+          ? 'prod url'
+          : 'http://localhost:3000'
+    })
+  );
+
+  app.use(
+    session({
+      name: 'user',
+      secret: process.env.SESSION_SECRET as string,
+      resave: false,
+      saveUninitialized: true,
+      cookie: {
+        maxAge: 4 * 60 * 60 * 1000, // 4 hours
+        httpOnly: true,
+        sameSite: 'lax' //csrf
+      }
+    })
+  );
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver],
-      validate: false
+      resolvers: [HelloResolver, UserResolver]
     }),
     playground: true,
     context: ({ req, res }) => ({

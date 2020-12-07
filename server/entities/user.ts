@@ -1,23 +1,46 @@
 import { ObjectType, Field } from 'type-graphql';
-import { Entity, Column, OneToMany, BeforeInsert, Index } from 'typeorm';
-import { Post, Base } from '.';
+import {
+  Entity,
+  Column,
+  OneToMany,
+  BeforeInsert,
+  Index,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BaseEntity
+} from 'typeorm';
+import { Post } from '.';
 import { hash } from 'bcryptjs';
 
 @ObjectType()
-@Entity()
-class User extends Base {
+@Entity('users')
+class User extends BaseEntity {
   @Field()
+  @PrimaryGeneratedColumn()
+  id!: number;
+
   @Index()
+  @Field()
   @Column({ unique: true })
   username!: string;
 
-  @Field()
   @Index()
+  @Field()
   @Column({ unique: true })
   email!: string;
 
+  @Field()
   @Column()
-  password!: string;
+  password: string;
+
+  @Field(() => String)
+  @CreateDateColumn()
+  created_at: Date;
+
+  @Field(() => String)
+  @UpdateDateColumn()
+  updated_at: Date;
 
   @OneToMany(() => Post, post => post.user)
   posts: Array<Post>;
