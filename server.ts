@@ -4,7 +4,11 @@ import { ApolloServer } from 'apollo-server-express';
 import { createConnection } from 'typeorm';
 import { User, Post, Image, Like } from './server/entities';
 import { buildSchema } from 'type-graphql';
-import { HelloResolver, UserResolver } from './server/graphql/resolvers';
+import {
+  HelloResolver,
+  PostResolver,
+  UserResolver
+} from './server/graphql/resolvers';
 import express from 'express';
 import session from 'express-session';
 import path from 'path';
@@ -55,7 +59,7 @@ const startServer = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, UserResolver]
+      resolvers: [HelloResolver, UserResolver, PostResolver]
     }),
     playground: true,
     context: ({ req, res }) => ({
