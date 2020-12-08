@@ -3,13 +3,13 @@ import {
   Arg,
   // Ctx,
   Resolver,
-  //Query,
+  Query,
   Mutation,
   InputType,
   Field,
-  UseMiddleware
+  // UseMiddleware
 } from 'type-graphql';
-import { isAuth } from '../../middleware/isAuth';
+// import { isAuth } from '../../middleware/isAuth';
 
 @InputType()
 class CreatePostInput {
@@ -17,7 +17,7 @@ class CreatePostInput {
   title: string;
 
   @Field()
-  text: string;
+  content: string;
 
   @Field()
   user_id: number;
@@ -26,15 +26,22 @@ class CreatePostInput {
 @Resolver(Post)
 class PostResolver {
   @Mutation(() => Post)
-  @UseMiddleware(isAuth)
+  // @UseMiddleware(isAuth)
   async create(@Arg('input') input: CreatePostInput) {
     try {
       // if theres an image create new photo as well then take the photo if from the return and add it to the post
-
       return await Post.create({ ...input }).save();
     } catch (err) {
       throw err;
     }
+  }
+
+  @Query(() => [Post])
+  // @UseMiddleware(isAuth)
+  async posts() {
+    const res = await Post.find({ where: { user_id: 1 }, relations: ['likes'] })
+    console.log('res', res)
+    return res;
   }
 }
 

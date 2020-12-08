@@ -6,11 +6,12 @@ import { User, Post, Image, Like } from './server/entities';
 import { buildSchema } from 'type-graphql';
 import {
   HelloResolver,
+  LikeResolver,
   PostResolver,
   UserResolver
 } from './server/graphql/resolvers';
 import express from 'express';
-import session from 'express-session';
+// import session from 'express-session';
 import path from 'path';
 import cors from 'cors';
 import colors from 'colors';
@@ -43,23 +44,23 @@ const startServer = async () => {
     })
   );
 
-  app.use(
-    session({
-      name: 'user',
-      secret: process.env.SESSION_SECRET as string,
-      resave: false,
-      saveUninitialized: true,
-      cookie: {
-        maxAge: 4 * 60 * 60 * 1000, // 4 hours
-        httpOnly: true,
-        sameSite: 'lax' //csrf
-      }
-    })
-  );
+  // app.use(
+  //   session({
+  //     name: 'user',
+  //     secret: process.env.SESSION_SECRET as string,
+  //     resave: false,
+  //     saveUninitialized: true,
+  //     cookie: {
+  //       maxAge: 4 * 60 * 60 * 1000, // 4 hours
+  //       httpOnly: true,
+  //       sameSite: 'lax' //csrf
+  //     }
+  //   })
+  // );
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, UserResolver, PostResolver]
+      resolvers: [HelloResolver, LikeResolver, PostResolver, UserResolver]
     }),
     playground: true,
     context: ({ req, res }) => ({

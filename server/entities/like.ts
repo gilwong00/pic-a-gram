@@ -1,30 +1,34 @@
+import { ObjectType, Field } from 'type-graphql';
 import {
   Entity,
-  ManyToOne,
   BaseEntity,
   PrimaryGeneratedColumn,
-  JoinColumn
+  Column,
+  ManyToOne
 } from 'typeorm';
 import { Post, User } from '.';
 
+@ObjectType()
 @Entity('likes')
 class Like extends BaseEntity {
+  @Field()
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => Post, post => post.likes)
-  @JoinColumn({ name: 'post_id' })
+  // @ManyToOne(() => Post, post => post.likes)
+  @Column({ name: 'post_id' })
   post_id: number;
 
-  @ManyToOne(() => User, user => user.likes)
-  @JoinColumn({ name: 'user_id' })
+  @Field()
+  // @ManyToOne(() => User, user => user.likes)
+  @Column({ name: 'user_id' })
   user_id: number;
 
-  // @ManyToOne(() => User, user => user.likes)
-  // user: User;
+  @ManyToOne(() => User, user => user.likes)
+  user: User;
 
-  // @ManyToOne(() => Post, post => post.likes)
-  // post: Post;
+  @ManyToOne(() => Post, post => post.likes)
+  post: Post;
 }
 
 export default Like;

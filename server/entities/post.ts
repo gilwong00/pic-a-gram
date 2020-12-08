@@ -2,15 +2,15 @@ import { ObjectType, Field } from 'type-graphql';
 import {
   Entity,
   Column,
-  JoinColumn,
-  OneToOne,
+  // JoinColumn,
+  // OneToOne,
   OneToMany,
   BaseEntity,
   CreateDateColumn,
   UpdateDateColumn,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User, Image, Like } from '.';
+import { User, Like } from '.';
 
 @ObjectType()
 @Entity('posts')
@@ -25,7 +25,7 @@ class Post extends BaseEntity {
 
   @Field()
   @Column()
-  text: string;
+  content: string;
 
   @Field()
   @Column()
@@ -41,11 +41,11 @@ class Post extends BaseEntity {
 
   user: User;
 
-  @OneToOne(() => Image, image => image.id)
-  @JoinColumn({ name: 'photo_id' })
-  photo_id: number;
+  // @OneToOne(() => Image, image => image.id, { nullable: true, onDelete: 'CASCADE' })
+  // @JoinColumn({ name: 'photo_id' })
+  // photo_id: number;
 
-  @OneToMany(() => Like, like => like.post_id)
+  @OneToMany(() => Like, like => like.post, { nullable: true, onDelete: 'CASCADE' })
   likes: Array<Like>;
 }
 
