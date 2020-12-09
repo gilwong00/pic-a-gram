@@ -42,10 +42,10 @@ class User extends BaseEntity {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @OneToMany(() => Post, post => post.user)
+  @OneToMany(() => Post, post => post.user, { nullable: true })
   posts: Array<Post>;
 
-  @OneToMany(() => Like, list => list.user_id)
+  @OneToMany(() => Like, list => list.user, { nullable: true })
   likes: Array<Like>;
 
   @BeforeInsert()

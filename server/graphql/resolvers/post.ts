@@ -7,6 +7,7 @@ import {
   Mutation,
   InputType,
   Field,
+  ObjectType,
   // UseMiddleware
 } from 'type-graphql';
 // import { isAuth } from '../../middleware/isAuth';
@@ -23,6 +24,14 @@ class CreatePostInput {
   user_id: number;
 }
 
+@ObjectType()
+class PaginatedPosts {
+  @Field(() => [Post])
+  results: Array<Post>;
+  @Field()
+  total: number;
+}
+
 @Resolver(Post)
 class PostResolver {
   @Mutation(() => Post)
@@ -36,12 +45,20 @@ class PostResolver {
     }
   }
 
-  @Query(() => [Post])
+  @Query(() => PaginatedPosts)
   // @UseMiddleware(isAuth)
-  async posts() {
-    const res = await Post.find({ where: { user_id: 1 }, relations: ['likes'] })
-    console.log('res', res)
-    return res;
+  async posts(@Arg('skip') skip: number) {
+    const [result, total] = await Post.findAndCount({
+      order: { created_at: 'DESC' },
+      take: 10,
+      skip: (skip || 0) * 10,
+      relations: ['likes'],
+    });
+
+    return {
+      results: result,
+      total,
+    };
   }
 }
 

@@ -11,14 +11,14 @@ import {
   UserResolver
 } from './server/graphql/resolvers';
 import express from 'express';
-// import session from 'express-session';
+import session from 'express-session';
 import path from 'path';
 import cors from 'cors';
 import colors from 'colors';
 
 const startServer = async () => {
   const PORT = process.env.PORT || 5000;
-  const conn = await createConnection({
+  await createConnection({
     type: 'postgres',
     host: process.env.DATABASE_URL,
     username: process.env.DATABASE_USER,
@@ -30,7 +30,7 @@ const startServer = async () => {
     entities: [User, Post, Image, Like]
   });
 
-  await conn.runMigrations();
+  // await conn.runMigrations();
   const app = express();
 
   app.set('trust proxy', 1);
@@ -44,19 +44,19 @@ const startServer = async () => {
     })
   );
 
-  // app.use(
-  //   session({
-  //     name: 'user',
-  //     secret: process.env.SESSION_SECRET as string,
-  //     resave: false,
-  //     saveUninitialized: true,
-  //     cookie: {
-  //       maxAge: 4 * 60 * 60 * 1000, // 4 hours
-  //       httpOnly: true,
-  //       sameSite: 'lax' //csrf
-  //     }
-  //   })
-  // );
+  app.use(
+    session({
+      name: 'user',
+      secret: process.env.SESSION_SECRET as string,
+      resave: false,
+      saveUninitialized: true,
+      cookie: {
+        maxAge: 4 * 60 * 60 * 1000, // 4 hours
+        httpOnly: true,
+        sameSite: 'lax' //csrf
+      }
+    })
+  );
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({

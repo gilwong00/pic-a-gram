@@ -3,8 +3,9 @@ import {
   Entity,
   BaseEntity,
   PrimaryGeneratedColumn,
-  Column,
-  ManyToOne
+  ManyToOne,
+  JoinColumn,
+  Column
 } from 'typeorm';
 import { Post, User } from '.';
 
@@ -15,19 +16,19 @@ class Like extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  // @ManyToOne(() => Post, post => post.likes)
   @Column({ name: 'post_id' })
   post_id: number;
 
-  @Field()
-  // @ManyToOne(() => User, user => user.likes)
   @Column({ name: 'user_id' })
+  @Field()
   user_id: number;
 
-  @ManyToOne(() => User, user => user.likes)
+  @ManyToOne(() => User, user => user.likes, { primary: true })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Post, post => post.likes)
+  @ManyToOne(() => Post, post => post.likes, { primary: true })
+  @JoinColumn({ name: 'post_id' })
   post: Post;
 }
 

@@ -2,8 +2,6 @@ import { ObjectType, Field } from 'type-graphql';
 import {
   Entity,
   Column,
-  // JoinColumn,
-  // OneToOne,
   OneToMany,
   BaseEntity,
   CreateDateColumn,
@@ -41,11 +39,8 @@ class Post extends BaseEntity {
 
   user: User;
 
-  // @OneToOne(() => Image, image => image.id, { nullable: true, onDelete: 'CASCADE' })
-  // @JoinColumn({ name: 'photo_id' })
-  // photo_id: number;
-
   @OneToMany(() => Like, like => like.post, { nullable: true, onDelete: 'CASCADE' })
+  @Field(() => [Like])
   likes: Array<Like>;
 }
 
