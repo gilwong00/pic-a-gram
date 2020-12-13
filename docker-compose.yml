@@ -9,3 +9,11 @@ services:
       POSTGRES_DB: picagram
     ports:
       - "5432:5432"
+  # redis:
+  #   image: redis:latest
+  #   environment:
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #   ports:
+  #     - "6379:6379"
+

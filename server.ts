@@ -18,6 +18,7 @@ import colors from 'colors';
 
 const startServer = async () => {
   const PORT = process.env.PORT || 5000;
+
   await createConnection({
     type: 'postgres',
     host: process.env.DATABASE_URL,
@@ -49,7 +50,7 @@ const startServer = async () => {
       name: 'user',
       secret: process.env.SESSION_SECRET as string,
       resave: false,
-      saveUninitialized: true,
+      saveUninitialized: false,
       cookie: {
         maxAge: 4 * 60 * 60 * 1000, // 4 hours
         httpOnly: true,

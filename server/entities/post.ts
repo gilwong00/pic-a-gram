@@ -6,7 +6,7 @@ import {
   BaseEntity,
   CreateDateColumn,
   UpdateDateColumn,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn
 } from 'typeorm';
 import { User, Like } from '.';
 
@@ -29,6 +29,10 @@ class Post extends BaseEntity {
   @Column()
   user_id: number;
 
+  @Field()
+  @Column()
+  username: string;
+
   @Field(() => String)
   @CreateDateColumn()
   created_at: Date;
@@ -39,7 +43,10 @@ class Post extends BaseEntity {
 
   user: User;
 
-  @OneToMany(() => Like, like => like.post, { nullable: true, onDelete: 'CASCADE' })
+  @OneToMany(() => Like, like => like.post, {
+    nullable: true,
+    onDelete: 'CASCADE'
+  })
   @Field(() => [Like])
   likes: Array<Like>;
 }

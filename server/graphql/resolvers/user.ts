@@ -3,7 +3,7 @@ import {
   Arg,
   Ctx,
   Resolver,
-  //Query,
+  Query,
   Mutation,
   InputType,
   Field
@@ -59,6 +59,28 @@ class UserResolver {
     } catch (err) {
       throw err;
     }
+  }
+
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() { req }: Context): Promise<User | null | undefined> {
+    if (!req.session.userId) return null;
+    return await User.findOne(req.session.userId);
+  }
+
+  @Mutation(() => Boolean)
+  logout(@Ctx() { req, res }: Context) {
+    return new Promise(resolve =>
+      req.session.destroy((err: any) => {
+        res.clearCookie('user');
+
+        if (err) {
+          console.log(err);
+          return resolve(false);
+        }
+
+        return resolve(true);
+      })
+    );
   }
 }
 

@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import { LOGIN } from 'graphql/user/mutations';
+import { ME } from 'graphql/user/queries';
 import {
   Paper,
   FormControl,
   TextField,
   InputAdornment,
   Button,
-  CircularProgress,
+  CircularProgress
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -26,12 +27,12 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: 'auto',
       marginRight: 'auto',
       marginTop: 50,
-      height: 180,
+      height: 180
     },
     field: {
       paddingTop: 15,
-      paddingBottom: 20,
-    },
+      paddingBottom: 20
+    }
   })
 );
 
@@ -43,11 +44,21 @@ const Login = () => {
   const [login, { loading: loginLoading, error: loginError }] = useMutation(
     LOGIN,
     {
-      update() {
+      update(cache, { data }) {
+        if (loginError) console.log(loginError);
+
+        cache.writeQuery({
+          query: ME,
+          data: {
+            __typename: 'Query',
+            me: data?.login
+          }
+        });
+
         setUsername('');
         setPassword('');
         history.push('/');
-      },
+      }
     }
   );
 
@@ -66,7 +77,7 @@ const Login = () => {
               <InputAdornment position='start'>
                 <AccountCircle />
               </InputAdornment>
-            ),
+            )
           }}
         />
       </FormControl>
@@ -84,7 +95,7 @@ const Login = () => {
               <InputAdornment position='start'>
                 <LockIcon />
               </InputAdornment>
-            ),
+            )
           }}
         />
       </FormControl>
@@ -96,7 +107,8 @@ const Login = () => {
           disabled={!username || !password}
           onClick={async () =>
             await login({ variables: { usernameOrEmail: username, password } })
-          }>
+          }
+        >
           {loginLoading ? <CircularProgress /> : 'Login'}
         </Button>
       </FormControl>

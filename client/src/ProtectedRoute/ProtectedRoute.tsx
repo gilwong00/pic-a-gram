@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect, Route, RouteComponentProps } from 'react-router-dom';
 import { useApolloClient } from '@apollo/client';
-import { USER_FRAGMENT } from 'graphql/fragments/user';
+import { ME } from 'graphql/user/queries';
 
 export interface IProps {
   component: React.FC<RouteComponentProps>;
@@ -12,22 +12,19 @@ export interface IProps {
 const ProtectedRoute: React.FC<IProps> = ({
   component: Component,
   path,
-  exact,
+  exact
 }: IProps) => {
   const client = useApolloClient();
-  const user = client.cache.readFragment<{
-    id: number;
-    email: string;
-    username: string;
-  }>({
-    fragment: USER_FRAGMENT,
+  const user = client.readQuery({
+    query: ME
   });
+
   return (
     <Route
       path={path}
       exact={exact}
       render={(props: RouteComponentProps) =>
-        user ? <Component {...props} /> : <Redirect to='/login' />
+        user.me ? <Component {...props} /> : <Redirect to='/login' />
       }
     />
   );

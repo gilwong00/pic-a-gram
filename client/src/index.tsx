@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from 'App';
+import { AppProvider } from 'Context';
 import { ApolloProvider } from '@apollo/client';
 import { client } from 'Apollo';
-import { ThemeProvider } from '@material-ui/core/styles'
+import { ThemeProvider } from '@material-ui/core/styles';
 import { theme } from 'theme';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
@@ -12,7 +13,9 @@ ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
-        <App />
+        <AppProvider>
+          <App />
+        </AppProvider>
       </ThemeProvider>
     </ApolloProvider>
   </React.StrictMode>,

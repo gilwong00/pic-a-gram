@@ -8,4 +8,10 @@ export const LOGIN = gql`
       email
     }
   }
-`
+`;
+
+export const LOGOUT = gql`
+  mutation logoff {
+    logout
+  }
+`;
