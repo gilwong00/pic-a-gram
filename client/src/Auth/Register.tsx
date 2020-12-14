@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
-import { LOGIN } from 'graphql/user/mutations';
+import { REGISTER } from 'graphql/user/mutations';
 import { ME } from 'graphql/user/queries';
 import {
   Paper,
@@ -14,6 +14,8 @@ import {
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import LockIcon from '@material-ui/icons/Lock';
+import EmailIcon from '@material-ui/icons/Email';
+import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,7 +29,8 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: 'auto',
       marginRight: 'auto',
       marginTop: 50,
-      height: 180,
+      minHeight: 180,
+      height: 'auto',
       [theme.breakpoints.down('md')]: {
         width: 260
       }
@@ -39,31 +42,36 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Login = () => {
+const Register = () => {
   const [username, setUsername] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [confirmedPassword, setConfirmedPassword] = useState<string>('');
   const classes = useStyles();
   const history = useHistory();
-  const [login, { loading: loginLoading, error: loginError }] = useMutation(
-    LOGIN,
-    {
-      update(cache, { data }) {
-        if (loginError) console.log(loginError);
+  const [
+    register,
+    { loading: registerLoading, error: registerError }
+  ] = useMutation(REGISTER, {
+    update(cache, { data }) {
+      if (registerError) console.log(registerError);
 
-        cache.writeQuery({
-          query: ME,
-          data: {
-            __typename: 'Query',
-            me: data?.login
-          }
-        });
-
-        setUsername('');
-        setPassword('');
-        history.push('/');
-      }
+      cache.writeQuery({
+        query: ME,
+        data: {
+          __typename: 'Query',
+          me: data?.register
+        }
+      });
+      history.push('/');
     }
-  );
+  });
+
+  const handleRegister = async () => {
+    if (!username || !email || !password || !confirmedPassword) return;
+    if (password !== confirmedPassword) return;
+    await register({ variables: { username, email, password } });
+  };
 
   return (
     <Paper className={classes.formWrapper} variant='outlined' elevation={3}>
@@ -79,6 +87,24 @@ const Login = () => {
             startAdornment: (
               <InputAdornment position='start'>
                 <AccountCircle />
+              </InputAdornment>
+            )
+          }}
+        />
+      </FormControl>
+
+      <FormControl fullWidth={true} className={classes.field}>
+        <TextField
+          placeholder='Email Address'
+          value={email}
+          type='text'
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setEmail(e.target.value)
+          }
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position='start'>
+                <EmailIcon />
               </InputAdornment>
             )
           }}
@@ -103,20 +129,36 @@ const Login = () => {
         />
       </FormControl>
 
+      <FormControl fullWidth={true} className={classes.field}>
+        <TextField
+          placeholder='Confirm Password'
+          value={confirmedPassword}
+          type='password'
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setConfirmedPassword(e.target.value)
+          }
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position='start'>
+                <EnhancedEncryptionIcon />
+              </InputAdornment>
+            )
+          }}
+        />
+      </FormControl>
+
       <FormControl fullWidth={true}>
         <Button
           variant='contained'
           color='primary'
-          disabled={!username || !password}
-          onClick={async () =>
-            await login({ variables: { usernameOrEmail: username, password } })
-          }
+          disabled={!username || !password || !email || !confirmedPassword}
+          onClick={handleRegister}
         >
-          {loginLoading ? <CircularProgress /> : 'Login'}
+          {registerLoading ? <CircularProgress /> : 'Login'}
         </Button>
       </FormControl>
     </Paper>
   );
 };
 
-export default Login;
+export default Register;

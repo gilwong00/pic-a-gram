@@ -1,4 +1,6 @@
-import React, { useState, useContext } from 'react';
+import { useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { AppContext } from 'Context';
 import { useHistory } from 'react-router-dom';
 import { MobileMenu, AuthMenu } from '.';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -13,7 +15,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import CreateIcon from '@material-ui/icons/Create';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import { AppContext } from 'Context';
+import CameraEnhanceIcon from '@material-ui/icons/CameraEnhance';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,7 +26,16 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(2)
     },
     title: {
-      flexGrow: 1
+      flexGrow: 1,
+      textDecoration: 'none',
+      color: '#fff',
+      display: 'flex',
+      alignItems: 'center',
+      [theme.breakpoints.down('md')]: {
+        '& h6': {
+          display: 'none'
+        }
+      }
     },
     desktopMenu: {
       display: 'none',
@@ -37,6 +48,9 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up('md')]: {
         display: 'none'
       }
+    },
+    homeIcon: {
+      paddingRight: 15
     }
   })
 );
@@ -51,9 +65,12 @@ const Navbar: React.FC = () => {
     <div className={classes.root}>
       <AppBar position='static' color='secondary'>
         <Toolbar>
-          <Typography variant='h6' className={classes.title}>
-            Pic-o-gram
-          </Typography>
+          <Link to='/' className={classes.title}>
+            <CameraEnhanceIcon className={classes.homeIcon} fontSize='large' />
+            <Typography variant='h6' className={classes.title}>
+              Pic-o-gram
+            </Typography>
+          </Link>
 
           <div className={classes.desktopMenu}>
             {user ? (
