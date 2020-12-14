@@ -11,7 +11,7 @@ import {
   BaseEntity
 } from 'typeorm';
 import { Like, Post } from '.';
-import { hash } from 'bcryptjs';
+import { genSaltSync, hash } from 'bcryptjs';
 
 @ObjectType()
 @Entity('users')
@@ -50,7 +50,8 @@ class User extends BaseEntity {
 
   @BeforeInsert()
   async hashPassword() {
-    this.password = await hash(this.password, 10);
+    const salt = genSaltSync(10);
+    this.password = await hash(this.password, salt);
   }
 }
 

@@ -24,7 +24,7 @@ const ProtectedRoute: React.FC<IProps> = ({
       path={path}
       exact={exact}
       render={(props: RouteComponentProps) =>
-        user.me ? <Component {...props} /> : <Redirect to='/login' />
+        user?.me ? <Component {...props} /> : <Redirect to='/login' />
       }
     />
   );

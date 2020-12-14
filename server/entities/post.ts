@@ -6,9 +6,10 @@ import {
   BaseEntity,
   CreateDateColumn,
   UpdateDateColumn,
-  PrimaryGeneratedColumn
+  PrimaryGeneratedColumn,
+  OneToOne
 } from 'typeorm';
-import { User, Like } from '.';
+import { User, Like, Image } from '.';
 
 @ObjectType()
 @Entity('posts')
@@ -42,6 +43,13 @@ class Post extends BaseEntity {
   updated_at: Date;
 
   user: User;
+
+  @OneToOne(() => Image, image => image.post, {
+    onDelete: 'CASCADE',
+    nullable: true
+  })
+  @Field(() => Image)
+  image: Image;
 
   @OneToMany(() => Like, like => like.post, {
     nullable: true,

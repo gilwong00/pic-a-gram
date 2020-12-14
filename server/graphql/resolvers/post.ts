@@ -1,4 +1,4 @@
-import { Post } from '../../entities';
+import { Post, Image } from '../../entities';
 import {
   Arg,
   // Ctx,
@@ -24,6 +24,12 @@ class CreatePostInput {
 
   @Field()
   user_id: number;
+
+  @Field()
+  username: string;
+
+  @Field()
+  imageSrc?: string;
 }
 
 @ObjectType()
@@ -40,8 +46,21 @@ class PostResolver {
   @UseMiddleware(isAuth)
   async create(@Arg('input') input: CreatePostInput) {
     try {
-      // if theres an image create new photo as well then take the photo if from the return and add it to the post
-      return await Post.create({ ...input }).save();
+      const newPost = await Post.create({ ...input }).save();
+
+      if (input.imageSrc) {
+        const image = await Image.create({
+          image_src: input.imageSrc,
+          post_id: newPost.id
+        }).save();
+
+        return {
+          ...newPost,
+          image
+        };
+      } else {
+        return newPost;
+      }
     } catch (err) {
       throw err;
     }
@@ -53,8 +72,8 @@ class PostResolver {
     const [result, total] = await Post.findAndCount({
       order: { created_at: 'DESC' },
       take: PAGE_LIMIT,
-      skip: +pageNum * PAGE_LIMIT,
-      relations: ['likes']
+      skip: (+pageNum - 1) * PAGE_LIMIT,
+      relations: ['likes', 'image']
     });
 
     const totalPages: number = Math.ceil(total / PAGE_LIMIT);

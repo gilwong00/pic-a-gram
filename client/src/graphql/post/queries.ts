@@ -8,9 +8,14 @@ export const GET_POST = gql`
         title
         content
         created_at
+        username
+        user_id
         likes {
           id
           user_id
+        }
+        image {
+          image_src
         }
       }
       totalPages

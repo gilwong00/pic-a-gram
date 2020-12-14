@@ -18,6 +18,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import { blue, red } from '@material-ui/core/colors';
+import { IPost } from 'Post';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -35,7 +36,8 @@ const useStyles = makeStyles(() =>
       color: red[500]
     },
     commentIcon: {
-      color: blue[500]
+      color: blue[500],
+      marginLeft: 15
     },
     divider: {
       marginTop: 10
@@ -48,11 +50,17 @@ const useStyles = makeStyles(() =>
 );
 
 interface IProps {
-  post?: any;
+  post: IPost;
 }
 
 const Post: React.FC<IProps> = ({ post }) => {
   const classes = useStyles();
+  const totalLikes = post.likes.length;
+  const date = new Date(+post.created_at);
+  const dateOptions = { month: 'long', day: 'numeric', year: 'numeric' };
+  const displayDate = new Intl.DateTimeFormat('en-US', dateOptions).format(
+    date
+  );
 
   return (
     <Grid item xs={12} md={4}>
@@ -61,37 +69,37 @@ const Post: React.FC<IProps> = ({ post }) => {
           <CardHeader
             avatar={
               <Avatar aria-label='avatar' className={classes.avatar}>
-                R
+                {post.username.charAt(0).toUpperCase()}
               </Avatar>
             }
-            title='Shrimp and Chorizo Paella'
-            subheader='September 14, 2016'
+            title={post.title}
+            subheader={displayDate}
           />
           <CardMedia
             className={classes.media}
-            image='https://i.picsum.photos/id/338/200/300.jpg?hmac=rE5P3WDLKY1VMpd9y_FLo_OKhTzG4_3zCbGjKvgOL5w'
-            title='Paella dish'
+            image={post?.image?.image_src ?? 'http://placehold.jp/200x200.png'}
+            title={post.title}
           />
 
           <CardActions disableSpacing>
             <IconButton aria-label='like post' className={classes.favoriteIcon}>
-              <FavoriteIcon />
+              {totalLikes > 0 ? <FavoriteIcon /> : <FavoriteBorderIcon />}
             </IconButton>
-            <Typography component='p'>12</Typography>
+            {totalLikes > 0 && (
+              <Typography component='p'>{totalLikes}</Typography>
+            )}
             <IconButton aria-label='like post' className={classes.commentIcon}>
               <ChatBubbleIcon />
             </IconButton>
             <Typography component='p'>12</Typography>
           </CardActions>
-          <Link className={classes.viewComments} to={`/post`}>
+          <Link className={classes.viewComments} to={`/post/${post.id}`}>
             View all comments
           </Link>
           <Divider className={classes.divider} />
           <CardContent>
             <Typography variant='body2' color='textPrimary' component='p'>
-              This impressive paella is a perfect party dish and a fun meal to
-              cook together with your guests. Add 1 cup of frozen peas along
-              with the mussels, if you like.
+              {post.content}
             </Typography>
           </CardContent>
         </Card>

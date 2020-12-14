@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Post } from 'Post';
+import { IPost, Post } from 'Post';
 import { Loading } from 'Loader';
 import { useQuery } from '@apollo/client';
 import { GET_POST } from 'graphql/post/queries';
@@ -50,9 +50,13 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: '56.25%' // 16:9
     },
     pagination: {
-      display: 'flex',
-      justifyContent: 'center',
-      paddingTop: 40
+      position: 'absolute',
+      bottom: '45%',
+      left: '48%',
+      [theme.breakpoints.down('md')]: {
+        left: '30%',
+        bottom: 0
+      }
     }
   })
 );
@@ -64,8 +68,6 @@ const Home = () => {
     variables: { pageNum },
     notifyOnNetworkStatusChange: true
   });
-
-  console.log('data', data);
 
   const handleChange = (_: React.ChangeEvent<unknown>, value: number) =>
     setPageNum(value.toString());
@@ -79,12 +81,11 @@ const Home = () => {
           <Container>
             <Paper elevation={5} className={classes.container}>
               <Grid container className={classes.root} spacing={3}>
-                <Post />
-                <Post />
-                <Post />
-                <Post />
+                {data.posts.results.map((post: IPost) => (
+                  <Post key={post.id} post={post} />
+                ))}
               </Grid>
-              {data?.posts.totalPages > 0 && (
+              {data?.posts.totalPages > 1 && (
                 <Pagination
                   className={classes.pagination}
                   color='primary'

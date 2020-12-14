@@ -1,3 +1,4 @@
+import { Post } from '.';
 import { ObjectType, Field } from 'type-graphql';
 import {
   Entity,
@@ -5,7 +6,9 @@ import {
   CreateDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  BaseEntity
+  BaseEntity,
+  OneToOne,
+  JoinColumn
 } from 'typeorm';
 
 @ObjectType()
@@ -19,6 +22,9 @@ class Image extends BaseEntity {
   @Column()
   image_src: string;
 
+  @Column()
+  post_id: number;
+
   @Field(() => String)
   @CreateDateColumn()
   created_at: Date;
@@ -26,6 +32,10 @@ class Image extends BaseEntity {
   @Field(() => String)
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToOne(() => Post, post => post.image, { primary: true })
+  @JoinColumn({ name: 'post_id' })
+  post: Post;
 }
 
 export default Image;
