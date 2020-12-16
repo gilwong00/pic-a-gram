@@ -1,6 +1,5 @@
-import { createMuiTheme } from '@material-ui/core'
-import { purple, blue } from '@material-ui/core/colors';
-
+import { createMuiTheme } from '@material-ui/core';
+import { purple } from '@material-ui/core/colors';
 
 export const theme = createMuiTheme({
   breakpoints: {
@@ -9,15 +8,15 @@ export const theme = createMuiTheme({
       sm: 600,
       md: 960,
       lg: 1280,
-      xl: 1920,
-    },
+      xl: 1920
+    }
   },
   palette: {
     primary: {
-      main: purple[700],
+      main: purple[700]
     },
     secondary: {
-      main: '#f50057',
-    },
-  },
+      main: '#f50057'
+    }
+  }
 });

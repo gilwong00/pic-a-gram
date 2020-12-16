@@ -18,4 +18,10 @@ export interface IPost {
   image?: IImage;
 }
 
+export interface IPaginatedPosts {
+  results: Array<IPost>;
+  totalPage: number;
+}
+
 export { default as Post } from './Post';
+export { default as AddPost } from './AddPost';

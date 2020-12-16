@@ -1,8 +1,5 @@
 import { InMemoryCache } from '@apollo/client';
-interface PaginatedPosts {
-  results: Array<any>;
-  totalPages: number;
-}
+import { IPaginatedPosts } from 'Post';
 
 const cache: InMemoryCache = new InMemoryCache({
   typePolicies: {
@@ -12,9 +9,9 @@ const cache: InMemoryCache = new InMemoryCache({
           keyArgs: [],
           // probably need a read field to handle pagination
           merge(
-            existing: PaginatedPosts,
-            incoming: PaginatedPosts
-          ): PaginatedPosts {
+            existing: IPaginatedPosts | undefined,
+            incoming: IPaginatedPosts
+          ): IPaginatedPosts {
             return {
               ...incoming,
               results: [...(existing?.results ?? []), ...incoming.results]

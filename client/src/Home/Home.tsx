@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IPost, Post } from 'Post';
+import { AddPost, IPost, Post } from 'Post';
 import { Loading } from 'Loader';
 import { useQuery } from '@apollo/client';
 import { GET_POST } from 'graphql/post/queries';
@@ -9,12 +9,10 @@ import {
   Grid,
   makeStyles,
   Paper,
-  Fab,
   Theme
 } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
 import Pagination from '@material-ui/lab/Pagination';
-import AddIcon from '@material-ui/icons/Add';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,15 +30,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     post: {
       minHeight: 300
-    },
-    fab: {
-      position: 'absolute',
-      bottom: theme.spacing(2),
-      right: theme.spacing(2),
-      display: 'none',
-      [theme.breakpoints.up('md')]: {
-        display: 'flex'
-      }
     },
     avatar: {
       backgroundColor: red[500]
@@ -79,6 +68,7 @@ const Home = () => {
       ) : (
         <>
           <Container>
+            {/* might not need this paper component */}
             <Paper elevation={5} className={classes.container}>
               <Grid container className={classes.root} spacing={3}>
                 {data.posts.results.map((post: IPost) => (
@@ -96,9 +86,7 @@ const Home = () => {
               )}
             </Paper>
           </Container>
-          <Fab color='primary' aria-label='add' className={classes.fab}>
-            <AddIcon />
-          </Fab>
+          <AddPost />
         </>
       )}
     </>
