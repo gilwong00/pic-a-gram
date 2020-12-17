@@ -8,7 +8,8 @@ import {
   InputType,
   Field,
   ObjectType,
-  UseMiddleware
+  UseMiddleware,
+  Int
 } from 'type-graphql';
 import { isAuth } from '../../middleware/isAuth';
 
@@ -22,8 +23,8 @@ class CreatePostInput {
   @Field()
   content: string;
 
-  @Field()
-  user_id: number;
+  @Field(() => Int)
+  user_id: string;
 
   @Field()
   username: string;
@@ -35,7 +36,7 @@ class CreatePostInput {
 @ObjectType()
 class PaginatedPosts {
   @Field(() => [Post])
-  results: Array<Post>;
+  posts: Array<Post>;
   @Field()
   totalPages: number;
 }
@@ -46,7 +47,11 @@ class PostResolver {
   @UseMiddleware(isAuth)
   async create(@Arg('input') input: CreatePostInput) {
     try {
-      const newPost = await Post.create({ ...input }).save();
+      const payload = {
+        ...input,
+        user_id: parseInt(input.user_id)
+      };
+      const newPost = await Post.create({ ...payload }).save();
 
       if (input.imageSrc) {
         const image = await Image.create({
@@ -56,10 +61,14 @@ class PostResolver {
 
         return {
           ...newPost,
-          image
+          image,
+          likes: []
         };
       } else {
-        return newPost;
+        return {
+          ...newPost,
+          likes: []
+        };
       }
     } catch (err) {
       throw err;
@@ -68,18 +77,18 @@ class PostResolver {
 
   @Query(() => PaginatedPosts)
   @UseMiddleware(isAuth)
-  async posts(@Arg('pageNum') pageNum: string) {
+  async posts(@Arg('pageNum', () => Int) pageNum: number) {
     const [result, total] = await Post.findAndCount({
       order: { created_at: 'DESC' },
       take: PAGE_LIMIT,
-      skip: (+pageNum - 1) * PAGE_LIMIT,
+      skip: (pageNum - 1) * PAGE_LIMIT,
       relations: ['likes', 'image']
     });
 
     const totalPages: number = Math.ceil(total / PAGE_LIMIT);
 
     return {
-      results: result,
+      posts: result,
       totalPages
     };
   }

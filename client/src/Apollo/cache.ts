@@ -14,7 +14,7 @@ const cache: InMemoryCache = new InMemoryCache({
           ): IPaginatedPosts {
             return {
               ...incoming,
-              results: [...(existing?.results ?? []), ...incoming.results]
+              posts: [...(existing?.posts ?? []), ...incoming.posts]
             };
           }
         }

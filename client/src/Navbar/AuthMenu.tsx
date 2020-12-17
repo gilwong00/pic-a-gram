@@ -1,15 +1,26 @@
 import { useState } from 'react';
+import { ApolloCache, useMutation } from '@apollo/client';
+import { LOGOUT } from 'graphql/user/mutations';
+import { useHistory } from 'react-router-dom';
 import { IconButton, Menu, MenuItem } from '@material-ui/core';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 
 const AuthMenu: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const history = useHistory();
+  const [logout] = useMutation(LOGOUT, {
+    update(cache: ApolloCache<any>, { data }) {
+      if (data) {
+        cache.reset();
+        history.push('/login');
+      }
+    }
+  });
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) =>
     setAnchorEl(event.currentTarget);
 
-  const handleLogout = () => {};
+  const handleLogout = async () => await logout();
 
   return (
     <>
@@ -34,7 +45,7 @@ const AuthMenu: React.FC = () => {
           vertical: 'top',
           horizontal: 'right'
         }}
-        open={open}
+        open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
       >
         <MenuItem onClick={() => console.log('hit')}>Profile</MenuItem>

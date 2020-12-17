@@ -4,9 +4,9 @@ export const CREATE_POST = gql`
   mutation createPost(
     $title: String!
     $content: String!
-    $userId: ID!
+    $userId: Int!
     $username: String!
-    $image_src: String
+    $imageSrc: String!
   ) {
     create(
       input: {
@@ -21,8 +21,14 @@ export const CREATE_POST = gql`
       title
       content
       user_id
+      likes {
+        id
+      }
       username
-      imageSrc
+      created_at
+      image {
+        image_src
+      }
     }
   }
 `;

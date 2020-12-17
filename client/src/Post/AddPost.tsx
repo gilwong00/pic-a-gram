@@ -21,6 +21,7 @@ import AddIcon from '@material-ui/icons/Add';
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
 import { AppContext } from 'Context';
 import { IPost } from 'Post';
+import { POST_FRAGMENT } from 'graphql/fragments/post';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -69,6 +70,8 @@ const AddPost = () => {
   const inputEl = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState<boolean>(false);
   const [imageSrc, setImageSrc] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
+  const [content, setContent] = useState<string>('');
   const [create, { loading: createLoading, error: createError }] = useMutation(
     CREATE_POST,
     {
@@ -83,7 +86,7 @@ const AddPost = () => {
             ) {
               const newPostRef = cache.writeFragment({
                 data: { __typename: 'Post', ...data.create },
-                fragment: ''
+                fragment: POST_FRAGMENT
               });
               return [newPostRef, ...existing?.posts];
             }
@@ -111,8 +114,12 @@ const AddPost = () => {
 
   const handleClose = () => {
     setImageSrc('');
+    setTitle('');
+    setContent('');
     setOpen(false);
   };
+
+  const openFileSelector = (): void => inputEl.current?.click();
 
   if (createLoading) return <Loading />;
 
@@ -136,6 +143,7 @@ const AddPost = () => {
                 <div
                   className={classes.previewImage}
                   style={{ backgroundImage: `url(${imageSrc})` }}
+                  onClick={openFileSelector}
                 />
               </>
             ) : (
@@ -143,7 +151,7 @@ const AddPost = () => {
                 <Fab
                   component='span'
                   className={classes.button}
-                  onClick={() => inputEl.current?.click()}
+                  onClick={openFileSelector}
                 >
                   <AddPhotoAlternateIcon color='primary' />
                 </Fab>
@@ -157,22 +165,39 @@ const AddPost = () => {
             )}
 
             <FormControl fullWidth={true} className={classes.field}>
-              <TextField placeholder='Title' fullWidth />
+              <TextField
+                placeholder='Title'
+                fullWidth
+                value={title}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setTitle(e.target.value)
+                }
+              />
             </FormControl>
             <FormControl fullWidth={true} className={classes.field}>
-              <TextField placeholder='Content' fullWidth />
+              <TextField
+                placeholder='Content'
+                fullWidth
+                value={content}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setContent(e.target.value)
+                }
+              />
             </FormControl>
           </form>
         </DialogContent>
         <DialogActions>
           <Button
             color='primary'
+            disabled={!title || !content}
             onClick={async () => {
               await create({
                 variables: {
-                  imageSrc,
+                  title,
+                  content,
                   userId: user?.id,
-                  username: user?.username
+                  username: user?.username,
+                  imageSrc
                 }
               });
             }}

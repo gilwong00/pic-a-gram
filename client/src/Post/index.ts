@@ -19,7 +19,7 @@ export interface IPost {
 }
 
 export interface IPaginatedPosts {
-  results: Array<IPost>;
+  posts: Array<IPost>;
   totalPage: number;
 }
 

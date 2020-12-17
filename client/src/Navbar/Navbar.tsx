@@ -1,7 +1,6 @@
 import { useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { AppContext } from 'Context';
-import { useHistory } from 'react-router-dom';
 import { MobileMenu, AuthMenu } from '.';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import {

@@ -33,7 +33,10 @@ class Image extends BaseEntity {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @OneToOne(() => Post, post => post.image, { primary: true })
+  @OneToOne(() => Post, post => post.image, {
+    primary: true,
+    onDelete: 'CASCADE'
+  })
   @JoinColumn({ name: 'post_id' })
   post: Post;
 }

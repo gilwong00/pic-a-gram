@@ -52,14 +52,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Home = () => {
   const classes = useStyles();
-  const [pageNum, setPageNum] = useState<string>('1');
+  const [pageNum, setPageNum] = useState<number>(1);
   const { data, loading, error } = useQuery(GET_POST, {
     variables: { pageNum },
     notifyOnNetworkStatusChange: true
   });
 
   const handleChange = (_: React.ChangeEvent<unknown>, value: number) =>
-    setPageNum(value.toString());
+    setPageNum(value);
 
   return (
     <>
@@ -71,7 +71,7 @@ const Home = () => {
             {/* might not need this paper component */}
             <Paper elevation={5} className={classes.container}>
               <Grid container className={classes.root} spacing={3}>
-                {data.posts.results.map((post: IPost) => (
+                {data.posts.posts.map((post: IPost) => (
                   <Post key={post.id} post={post} />
                 ))}
               </Grid>

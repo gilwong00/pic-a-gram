@@ -28,6 +28,10 @@ const useStyles = makeStyles(() =>
     avatar: {
       backgroundColor: red[500]
     },
+    title: {
+      fontWeight: 'bold',
+      fontSize: 18
+    },
     media: {
       height: 0,
       paddingTop: '56.25%' // 16:9
@@ -72,7 +76,9 @@ const Post: React.FC<IProps> = ({ post }) => {
                 {post.username.charAt(0).toUpperCase()}
               </Avatar>
             }
-            title={post.title}
+            title={
+              <span className={classes.title}>{post.title.toUpperCase()}</span>
+            }
             subheader={displayDate}
           />
           <CardMedia
