@@ -13,6 +13,7 @@ export const GET_POST = gql`
         likes {
           id
           user_id
+          post_id
         }
         image {
           image_src
