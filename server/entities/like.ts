@@ -16,6 +16,7 @@ class Like extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
+  @Field()
   @Column({ name: 'post_id' })
   post_id: number;
 

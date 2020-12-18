@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client';
 import { ME } from 'graphql/user/queries';
 
 export interface IUser {
-  id: string;
+  id: number;
   email: string;
   username: string;
 }

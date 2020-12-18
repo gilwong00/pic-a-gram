@@ -1,3 +1,5 @@
+import { useContext } from 'react';
+import { LikeButton } from '.';
 import { Link } from 'react-router-dom';
 import {
   Avatar,
@@ -14,11 +16,10 @@ import {
   makeStyles,
   createStyles
 } from '@material-ui/core';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import { blue, red } from '@material-ui/core/colors';
 import { IPost } from 'Post';
+import { AppContext } from 'Context';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -35,9 +36,6 @@ const useStyles = makeStyles(() =>
     media: {
       height: 0,
       paddingTop: '56.25%' // 16:9
-    },
-    favoriteIcon: {
-      color: red[500]
     },
     commentIcon: {
       color: blue[500],
@@ -58,8 +56,8 @@ interface IProps {
 }
 
 const Post: React.FC<IProps> = ({ post }) => {
+  const { user } = useContext(AppContext);
   const classes = useStyles();
-  const totalLikes = post.likes.length;
   const date = new Date(+post.created_at);
   const dateOptions = { month: 'long', day: 'numeric', year: 'numeric' };
   const displayDate = new Intl.DateTimeFormat('en-US', dateOptions).format(
@@ -88,12 +86,7 @@ const Post: React.FC<IProps> = ({ post }) => {
           />
 
           <CardActions disableSpacing>
-            <IconButton aria-label='like post' className={classes.favoriteIcon}>
-              {totalLikes > 0 ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-            </IconButton>
-            {totalLikes > 0 && (
-              <Typography component='p'>{totalLikes}</Typography>
-            )}
+            <LikeButton likes={post.likes} postId={post.id} userId={user?.id} />
             <IconButton aria-label='like post' className={classes.commentIcon}>
               <ChatBubbleIcon />
             </IconButton>

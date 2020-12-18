@@ -19,6 +19,15 @@ const cache: InMemoryCache = new InMemoryCache({
           }
         }
       }
+    },
+    Post: {
+      fields: {
+        likes: {
+          merge(_, incoming) {
+            return incoming;
+          }
+        }
+      }
     }
   }
 });

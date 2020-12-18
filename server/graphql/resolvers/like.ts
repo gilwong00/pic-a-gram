@@ -1,33 +1,30 @@
 import { Like } from '../../entities';
-import {
-  Arg,
-  Resolver,
-  Mutation,
-  InputType,
-  Field,
-  // UseMiddleware
-} from 'type-graphql';
-// import { isAuth } from '../../middleware/isAuth';
-
-@InputType()
-class LikePostInput {
-  @Field()
-  post_id: number;
-
-  @Field()
-  user_id: number;
-}
+import { Arg, Resolver, Mutation, Int, UseMiddleware } from 'type-graphql';
+import { isAuth } from '../../middleware/isAuth';
 
 @Resolver(Like)
 class LikeResolver {
   @Mutation(() => Like)
-  async like(@Arg('input') input: LikePostInput) {
+  @UseMiddleware(isAuth)
+  async like(
+    @Arg('postId', () => Int) postId: number,
+    @Arg('userId', () => Int) userId: number
+  ): Promise<Like> {
+    return await Like.create({ post_id: postId, user_id: userId }).save();
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async unlike(
+    @Arg('postId', () => Int) postId: number,
+    @Arg('userId', () => Int) userId: number
+  ): Promise<Boolean> {
     try {
-      console.log('input', input)
-      // if theres an image create new photo as well then take the photo if from the return and add it to the post
-      return await Like.create({ ...input }).save();
+      await Like.delete({ post_id: postId, user_id: userId });
+      return true;
     } catch (err) {
-      throw err;
+      console.log(err);
+      return false;
     }
   }
 }

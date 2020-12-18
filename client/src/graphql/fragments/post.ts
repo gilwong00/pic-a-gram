@@ -9,10 +9,21 @@ export const POST_FRAGMENT = gql`
     title
     likes {
       id
+      post_id
+      user_id
     }
     created_at
     image {
       image_src
+    }
+  }
+`;
+
+export const POST_LIKES_FRAGMENT = gql`
+  fragment PostLikesFragment on Post {
+    id
+    likes {
+      id
     }
   }
 `;

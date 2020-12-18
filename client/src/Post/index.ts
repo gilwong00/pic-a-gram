@@ -1,6 +1,7 @@
 export interface ILike {
   id: number;
   user_id: number;
+  post_id: number;
 }
 
 export interface IImage {
@@ -25,3 +26,4 @@ export interface IPaginatedPosts {
 
 export { default as Post } from './Post';
 export { default as AddPost } from './AddPost';
+export { default as LikeButton } from './LikeButton';
