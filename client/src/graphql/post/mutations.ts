@@ -49,19 +49,3 @@ export const COMMENT_POST = gql`
     }
   }
 `;
-
-export const LIKE_POST = gql`
-  mutation likePost($postId: Int!, $userId: Int!) {
-    like(postId: $postId, userId: $userId) {
-      id
-      user_id
-      post_id
-    }
-  }
-`;
-
-export const UNLIKE_POST = gql`
-  mutation unlikePost($postId: Int!, $userId: Int!) {
-    unlike(postId: $postId, userId: $userId)
-  }
-`;

@@ -1,7 +1,6 @@
 import { Post, Image } from '../../entities';
 import {
   Arg,
-  // Ctx,
   Resolver,
   Query,
   Mutation,
