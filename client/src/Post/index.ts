@@ -3,7 +3,6 @@ export interface ILike {
   user_id: number;
   post_id: number;
 }
-
 export interface IComment {
   id: number;
   user_id: number;

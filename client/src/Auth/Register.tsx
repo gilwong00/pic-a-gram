@@ -175,7 +175,7 @@ const Register = () => {
           disabled={!username || !password || !email || !confirmedPassword}
           onClick={handleRegister}
         >
-          {registerLoading ? <CircularProgress /> : 'Login'}
+          {registerLoading ? <CircularProgress /> : 'Register'}
         </Button>
       </FormControl>
     </Paper>
