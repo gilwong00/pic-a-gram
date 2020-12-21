@@ -82,7 +82,7 @@ class PostResolver {
       order: { created_at: 'DESC' },
       take: PAGE_LIMIT,
       skip: (pageNum - 1) * PAGE_LIMIT,
-      relations: ['likes', 'image']
+      relations: ['likes', 'image', 'comments']
     });
 
     const totalPages: number = Math.ceil(total / PAGE_LIMIT);

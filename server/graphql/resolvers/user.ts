@@ -21,6 +21,9 @@ class RegisterUserInput {
 
   @Field()
   password: string;
+
+  @Field()
+  avatarColor: string;
 }
 
 @Resolver(User)
@@ -28,7 +31,10 @@ class UserResolver {
   @Mutation(() => User)
   async register(@Arg('input') input: RegisterUserInput) {
     try {
-      return await User.create({ ...input }).save();
+      return await User.create({
+        ...input,
+        avatar_color: input.avatarColor
+      }).save();
     } catch (err) {
       throw err;
     }
@@ -41,6 +47,7 @@ class UserResolver {
     @Ctx() { req }: Context
   ): Promise<User> {
     try {
+      console.log('sdfsdf');
       const query = usernameOrEmail.includes('@')
         ? { where: { email: usernameOrEmail } }
         : { where: { username: usernameOrEmail } };

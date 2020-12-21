@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
   OneToOne
 } from 'typeorm';
-import { User, Like, Image } from '.';
+import { User, Like, Image, Comment } from '.';
 
 @ObjectType()
 @Entity('posts')
@@ -57,6 +57,13 @@ class Post extends BaseEntity {
   })
   @Field(() => [Like])
   likes: Array<Like>;
+
+  @OneToMany(() => Comment, comment => comment.post, {
+    nullable: true,
+    onDelete: 'CASCADE'
+  })
+  @Field(() => [Comment])
+  comments: Array<Comment>;
 }
 
 export default Post;

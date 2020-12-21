@@ -2,9 +2,10 @@ import 'reflect-metadata';
 import 'dotenv-safe/config';
 import { ApolloServer } from 'apollo-server-express';
 import { createConnection } from 'typeorm';
-import { User, Post, Image, Like } from './server/entities';
+import { User, Post, Image, Like, Comment } from './server/entities';
 import { buildSchema } from 'type-graphql';
 import {
+  CommentResolver,
   HelloResolver,
   LikeResolver,
   PostResolver,
@@ -28,7 +29,7 @@ const startServer = async () => {
     logging: true,
     synchronize: process.env.NODE_ENV !== 'production',
     migrations: [path.join(__dirname, './server/migrations/*')],
-    entities: [User, Post, Image, Like]
+    entities: [User, Post, Image, Like, Comment]
   });
 
   // await conn.runMigrations();
@@ -59,9 +60,16 @@ const startServer = async () => {
     })
   );
 
+  // maybe we can use a federation schema
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, LikeResolver, PostResolver, UserResolver]
+      resolvers: [
+        HelloResolver,
+        LikeResolver,
+        PostResolver,
+        UserResolver,
+        CommentResolver
+      ]
     }),
     playground: true,
     context: ({ req, res }) => ({

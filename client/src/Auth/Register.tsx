@@ -11,11 +11,23 @@ import {
   Button,
   CircularProgress
 } from '@material-ui/core';
+import {
+  red,
+  blue,
+  green,
+  purple,
+  orange,
+  yellow,
+  teal,
+  pink
+} from '@material-ui/core/colors';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import LockIcon from '@material-ui/icons/Lock';
 import EmailIcon from '@material-ui/icons/Email';
 import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
+
+const ALL_COLORS = [red, blue, green, purple, orange, yellow, teal, pink];
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -67,10 +79,19 @@ const Register = () => {
     }
   });
 
+  const randomize = () => Math.floor(Math.random() * ALL_COLORS.length);
+
   const handleRegister = async () => {
     if (!username || !email || !password || !confirmedPassword) return;
     if (password !== confirmedPassword) return;
-    await register({ variables: { username, email, password } });
+    await register({
+      variables: {
+        username,
+        email,
+        password,
+        avatarColor: ALL_COLORS[randomize()][500]
+      }
+    });
   };
 
   return (

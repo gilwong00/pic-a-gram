@@ -4,6 +4,12 @@ export interface ILike {
   post_id: number;
 }
 
+export interface IComment {
+  id: number;
+  user_id: number;
+  comment: string;
+}
+
 export interface IImage {
   image_src: string;
 }
@@ -17,6 +23,7 @@ export interface IPost {
   created_at: Date;
   likes: Array<ILike>;
   image?: IImage;
+  comments: Array<IComment>;
 }
 
 export interface IPaginatedPosts {
@@ -27,3 +34,4 @@ export interface IPaginatedPosts {
 export { default as Post } from './Post';
 export { default as AddPost } from './AddPost';
 export { default as LikeButton } from './LikeButton';
+export { default as CommentButton } from './CommentButton';

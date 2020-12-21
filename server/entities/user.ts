@@ -34,6 +34,10 @@ class User extends BaseEntity {
   @Column()
   password: string;
 
+  @Field()
+  @Column()
+  avatar_color: string;
+
   @Field(() => String)
   @CreateDateColumn()
   created_at: Date;

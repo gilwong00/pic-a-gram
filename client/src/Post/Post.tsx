@@ -1,5 +1,7 @@
-import { useContext } from 'react';
-import { LikeButton } from '.';
+import { useContext, useState } from 'react';
+import { ApolloCache, useMutation } from '@apollo/client';
+import { AppContext } from 'Context';
+import { IPost, LikeButton, CommentButton } from '.';
 import { Link } from 'react-router-dom';
 import {
   Avatar,
@@ -13,21 +15,20 @@ import {
   Grid,
   Divider,
   Typography,
+  Collapse,
   makeStyles,
-  createStyles
+  createStyles,
+  TextField,
+  CircularProgress
 } from '@material-ui/core';
-import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
-import { blue, red } from '@material-ui/core/colors';
-import { IPost } from 'Post';
-import { AppContext } from 'Context';
+import SendIcon from '@material-ui/icons/Send';
+import { COMMENT_POST } from 'graphql/post/mutations';
+import { POST_FRAGMENT } from 'graphql/fragments/post';
 
 const useStyles = makeStyles(() =>
   createStyles({
     post: {
       minHeight: 300
-    },
-    avatar: {
-      backgroundColor: red[500]
     },
     title: {
       fontWeight: 'bold',
@@ -35,11 +36,7 @@ const useStyles = makeStyles(() =>
     },
     media: {
       height: 0,
-      paddingTop: '56.25%' // 16:9
-    },
-    commentIcon: {
-      color: blue[500],
-      marginLeft: 15
+      paddingTop: '56.25%'
     },
     divider: {
       marginTop: 10
@@ -47,6 +44,9 @@ const useStyles = makeStyles(() =>
     viewComments: {
       paddingLeft: 15,
       fontSize: 14
+    },
+    commentSection: {
+      display: 'flex'
     }
   })
 );
@@ -58,6 +58,38 @@ interface IProps {
 const Post: React.FC<IProps> = ({ post }) => {
   const { user } = useContext(AppContext);
   const classes = useStyles();
+  const [showCommentInput, setShowCommentInput] = useState<boolean>(false);
+  const [newcomment, setNewComment] = useState<string>('');
+  const [
+    comment,
+    { loading: commentLoading, error: commentError }
+  ] = useMutation(COMMENT_POST, {
+    update(cache: ApolloCache<any>, { data }) {
+      console.log('data', data);
+      const id = `Post:${post.id}`;
+
+      const currentPost = cache.readFragment<IPost>({
+        id,
+        fragment: POST_FRAGMENT
+      });
+
+      if (currentPost) {
+        cache.writeFragment({
+          id,
+          fragment: POST_FRAGMENT,
+          data: {
+            __typename: 'Post',
+            comments: [
+              ...currentPost.comments,
+              { __typename: 'Comment', ...data.comment }
+            ]
+          }
+        });
+      }
+      setShowCommentInput(false);
+    }
+  });
+
   const date = new Date(+post.created_at);
   const dateOptions = { month: 'long', day: 'numeric', year: 'numeric' };
   const displayDate = new Intl.DateTimeFormat('en-US', dateOptions).format(
@@ -70,7 +102,10 @@ const Post: React.FC<IProps> = ({ post }) => {
         <Card>
           <CardHeader
             avatar={
-              <Avatar aria-label='avatar' className={classes.avatar}>
+              <Avatar
+                aria-label='avatar'
+                style={{ backgroundColor: user?.avatar_color ?? '' }}
+              >
                 {post.username.charAt(0).toUpperCase()}
               </Avatar>
             }
@@ -84,13 +119,12 @@ const Post: React.FC<IProps> = ({ post }) => {
             image={post?.image?.image_src ?? 'http://placehold.jp/200x200.png'}
             title={post.title}
           />
-
           <CardActions disableSpacing>
             <LikeButton likes={post.likes} postId={post.id} userId={user?.id} />
-            <IconButton aria-label='like post' className={classes.commentIcon}>
-              <ChatBubbleIcon />
-            </IconButton>
-            <Typography component='p'>12</Typography>
+            <CommentButton
+              comments={post.comments}
+              handleClick={() => setShowCommentInput(!showCommentInput)}
+            />
           </CardActions>
           <Link className={classes.viewComments} to={`/post/${post.id}`}>
             View all comments
@@ -101,6 +135,33 @@ const Post: React.FC<IProps> = ({ post }) => {
               {post.content}
             </Typography>
           </CardContent>
+          <Collapse in={showCommentInput} timeout='auto' unmountOnExit>
+            {/* maybe move this to its own component */}
+            <CardContent>
+              <div className={classes.commentSection}>
+                <TextField
+                  placeholder='Enter a comment'
+                  fullWidth
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setNewComment(e.target.value)
+                  }
+                />
+                <IconButton
+                  onClick={async () =>
+                    await comment({
+                      variables: {
+                        postId: post.id,
+                        userId: user?.id,
+                        comment: newcomment
+                      }
+                    })
+                  }
+                >
+                  {commentLoading ? <CircularProgress /> : <SendIcon />}
+                </IconButton>
+              </div>
+            </CardContent>
+          </Collapse>
         </Card>
       </Paper>
     </Grid>
