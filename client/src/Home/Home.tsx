@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { AddPost, IPost, Post } from 'Post';
 import { Loading } from 'Loader';
 import { useQuery } from '@apollo/client';
-import { GET_POST } from 'graphql/post/queries';
+import { GET_POSTS } from 'graphql/post/queries';
 import {
   Container,
   createStyles,
   Grid,
   makeStyles,
   Paper,
-  Theme,
+  Theme
 } from '@material-ui/core';
 import { red } from '@material-ui/core/colors';
 import Pagination from '@material-ui/lab/Pagination';
@@ -17,7 +17,7 @@ import Pagination from '@material-ui/lab/Pagination';
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      flexGrow: 1,
+      flexGrow: 1
     },
     container: {
       minHeight: 800,
@@ -25,18 +25,18 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: 20,
       marginTop: 50,
       [theme.breakpoints.down('md')]: {
-        boxShadow: 'none',
-      },
+        boxShadow: 'none'
+      }
     },
     post: {
-      minHeight: 300,
+      minHeight: 300
     },
     avatar: {
-      backgroundColor: red[500],
+      backgroundColor: red[500]
     },
     media: {
       height: 0,
-      paddingTop: '56.25%', // 16:9
+      paddingTop: '56.25%' // 16:9
     },
     pagination: {
       position: 'absolute',
@@ -44,18 +44,18 @@ const useStyles = makeStyles((theme: Theme) =>
       left: '48%',
       [theme.breakpoints.down('md')]: {
         left: '30%',
-        bottom: 0,
-      },
-    },
+        bottom: 0
+      }
+    }
   })
 );
 
 const Home = () => {
   const classes = useStyles();
   const [pageNum, setPageNum] = useState<number>(1);
-  const { data, loading, error } = useQuery(GET_POST, {
+  const { data, loading, error } = useQuery(GET_POSTS, {
     variables: { pageNum },
-    notifyOnNetworkStatusChange: true,
+    notifyOnNetworkStatusChange: true
   });
 
   const handleChange = (_: React.ChangeEvent<unknown>, value: number) =>

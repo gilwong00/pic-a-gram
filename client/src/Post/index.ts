@@ -1,3 +1,4 @@
+import { IUser } from 'Context';
 export interface ILike {
   id: number;
   user_id: number;
@@ -7,6 +8,7 @@ export interface IComment {
   id: number;
   user_id: number;
   comment: string;
+  user?: IUser;
 }
 
 export interface IImage {
@@ -34,3 +36,4 @@ export { default as Post } from './Post';
 export { default as AddPost } from './AddPost';
 export { default as LikeButton } from './LikeButton';
 export { default as CommentButton } from './CommentButton';
+export { default as PostDetails } from './PostDetails';

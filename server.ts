@@ -19,6 +19,7 @@ import colors from 'colors';
 
 const startServer = async () => {
   const PORT = process.env.PORT || 5000;
+  const app = express();
 
   await createConnection({
     type: 'postgres',
@@ -33,7 +34,6 @@ const startServer = async () => {
   });
 
   // await conn.runMigrations();
-  const app = express();
 
   app.set('trust proxy', 1);
   app.use(
@@ -75,7 +75,11 @@ const startServer = async () => {
     context: ({ req, res }) => ({
       req,
       res
-    })
+    }),
+    formatError: err => {
+      console.error(colors.red(`Error: ${err.message}\n`));
+      return err;
+    }
   });
 
   apolloServer.applyMiddleware({

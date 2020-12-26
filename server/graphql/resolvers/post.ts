@@ -91,6 +91,15 @@ class PostResolver {
       totalPages
     };
   }
+
+  @Query(() => Post)
+  @UseMiddleware(isAuth)
+  async post(@Arg('postId', () => Int) postId: number) {
+    return await Post.findOneOrFail(
+      { id: postId },
+      { relations: ['likes', 'image', 'comments', 'comments.user'] }
+    );
+  }
 }
 
 export default PostResolver;

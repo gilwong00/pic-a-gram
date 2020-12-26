@@ -6,6 +6,7 @@ import { Login, Register } from 'Auth';
 import { Home } from 'Home';
 import { Loading } from 'Loader';
 import { ProtectedRoute } from 'ProtectedRoute';
+import { PostDetails } from 'Post';
 
 function App() {
   const { loading } = useContext(AppContext);
@@ -19,6 +20,7 @@ function App() {
         <Switch>
           <Route path='/login' component={Login} />
           <Route path='/register' component={Register} />
+          <ProtectedRoute exact path='/post/:id' component={PostDetails} />
           <ProtectedRoute exact path='/' component={Home} />
         </Switch>
       )}

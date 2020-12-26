@@ -19,6 +19,12 @@ export const CREATE_POST = gql`
       }
     ) {
       ...PostFragment
+      comments {
+        id
+        comment
+        user_id
+        created_at
+      }
     }
   }
   ${POST_FRAGMENT}

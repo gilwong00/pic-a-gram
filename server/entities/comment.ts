@@ -5,7 +5,8 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
-  Column
+  Column,
+  CreateDateColumn
 } from 'typeorm';
 import { Post, User } from '.';
 
@@ -28,6 +29,11 @@ class Comment extends BaseEntity {
   @Field()
   comment: string;
 
+  @Field(() => String)
+  @CreateDateColumn()
+  created_at: Date;
+
+  @Field(() => User)
   @ManyToOne(() => User, user => user.likes, { primary: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
