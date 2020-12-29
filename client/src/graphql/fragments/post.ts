@@ -13,11 +13,6 @@ export const POST_FRAGMENT = gql`
       post_id
       user_id
     }
-    comments {
-      id
-      comment
-      user_id
-    }
     created_at
     image {
       image_src
