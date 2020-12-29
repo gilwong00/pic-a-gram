@@ -1,19 +1,18 @@
 # pic-a-gram
+
 it's like instagram but you know not as good
 
 ## Frontend
 
 React
 
-Redux
-
-Apollo
+Apollo-Client
 
 GraphQL
 
 Typescript
 
-React Router
+React-Router-Dom
 
 Styled Components
 
@@ -21,10 +20,12 @@ Styled Components
 
 Node
 
-Apollo
+Apollo-Express-Server
+
+Typescript
 
 GraphQL
 
-Mongoose
+Postgres
 
-MongoDB
+TypeORM

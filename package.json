@@ -4,18 +4,42 @@
 	"main": "index.js",
 	"license": "MIT",
 	"scripts": {
-		"dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
-		"start": "node server.js",
-		"server": "nodemon server.js",
-		"client": "npm run start --prefix client"
+		"dev": "concurrently --kill-others-on-fail \"yarn server:dev\" \"yarn client\"",
+		"start": "ts-node src/index.ts",
+		"server": "ts-node server.ts",
+		"server:dev": "ts-node-dev server.ts --watch",
+		"client": "npm run start --prefix client",
+		"typeorm": "ts-node ./node_modules/typeorm/cli.js",
+		"migration:new": "yarn typeorm migration:generate --name"
 	},
 	"dependencies": {
+		"@types/connect-redis": "^0.0.16",
 		"apollo-server": "^2.14.1",
+		"apollo-server-express": "^2.19.0",
+		"bcryptjs": "^2.4.3",
+		"class-validator": "^0.12.2",
 		"colors": "^1.4.0",
 		"concurrently": "^5.2.0",
-		"dotenv": "^8.2.0",
-		"graphql": "^15.0.0",
-		"mongoose": "^5.9.16",
-		"nodemon": "^2.0.4"
+		"connect-redis": "^5.0.0",
+		"dotenv-safe": "^8.2.0",
+		"express": "^4.17.1",
+		"express-session": "^1.17.1",
+		"graphql": "^15.4.0",
+		"ioredis": "^4.19.2",
+		"nodemon": "^2.0.4",
+		"pg": "^8.4.0",
+		"reflect-metadata": "^0.1.10",
+		"type-graphql": "^1.1.1",
+		"typeorm": "0.2.29"
+	},
+	"devDependencies": {
+		"@types/bcryptjs": "^2.4.2",
+		"@types/cors": "^2.8.8",
+		"@types/express": "^4.17.9",
+		"@types/express-session": "^1.17.3",
+		"@types/node": "^8.0.29",
+		"ts-node": "3.3.0",
+		"ts-node-dev": "^1.0.0",
+		"typescript": "3.3.3333"
 	}
 }

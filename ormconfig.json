@@ -1,0 +1,23 @@
+{
+	"type": "postgres",
+	"host": "localhost",
+	"port": 5432,
+	"username": "postgres",
+	"password": "postgres",
+	"database": "picagram",
+	"synchronize": true,
+	"logging": true,
+	"entities": [
+		"server/entities/**/*.ts"
+	],
+	"migrations": [
+		"server/migration/**/*.ts"
+	],
+	"subscribers": [
+		"server/subscriber/**/*.ts"
+	],
+	"cli": {
+		"entitiesDir": "server/entities",
+		"migrationsDir": "server/migrations"
+	}
+}
