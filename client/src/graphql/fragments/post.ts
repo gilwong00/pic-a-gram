@@ -13,6 +13,11 @@ export const POST_FRAGMENT = gql`
       post_id
       user_id
     }
+    comments {
+      id
+      comment
+      user_id
+    }
     created_at
     image {
       image_src
@@ -25,6 +30,17 @@ export const POST_LIKES_FRAGMENT = gql`
     id
     likes {
       id
+    }
+  }
+`;
+
+export const POST_COMMENT_FRAGMENT = gql`
+  fragment PostCommentsFragment on Post {
+    id
+    comments {
+      id
+      comment
+      user_id
     }
   }
 `;

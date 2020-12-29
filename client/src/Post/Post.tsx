@@ -23,7 +23,8 @@ import {
 } from '@material-ui/core';
 import SendIcon from '@material-ui/icons/Send';
 import { COMMENT_POST } from 'graphql/post/mutations';
-import { POST_FRAGMENT } from 'graphql/fragments/post';
+import { POST_COMMENT_FRAGMENT } from 'graphql/fragments/post';
+import { formatDate } from 'util/formatDate';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -65,22 +66,20 @@ const Post: React.FC<IProps> = ({ post }) => {
     { loading: commentLoading, error: commentError }
   ] = useMutation(COMMENT_POST, {
     update(cache: ApolloCache<any>, { data }) {
-      console.log('data', data);
       const id = `Post:${post.id}`;
-
       const currentPost = cache.readFragment<IPost>({
         id,
-        fragment: POST_FRAGMENT
+        fragment: POST_COMMENT_FRAGMENT
       });
 
       if (currentPost) {
         cache.writeFragment({
           id,
-          fragment: POST_FRAGMENT,
+          fragment: POST_COMMENT_FRAGMENT,
           data: {
             __typename: 'Post',
             comments: [
-              ...currentPost.comments,
+              ...(currentPost.comments ?? []),
               { __typename: 'Comment', ...data.comment }
             ]
           }
@@ -89,12 +88,6 @@ const Post: React.FC<IProps> = ({ post }) => {
       setShowCommentInput(false);
     }
   });
-
-  const date = new Date(+post.created_at);
-  const dateOptions = { month: 'long', day: 'numeric', year: 'numeric' };
-  const displayDate = new Intl.DateTimeFormat('en-US', dateOptions).format(
-    date
-  );
 
   return (
     <Grid item xs={12} md={4}>
@@ -112,7 +105,7 @@ const Post: React.FC<IProps> = ({ post }) => {
             title={
               <span className={classes.title}>{post.title.toUpperCase()}</span>
             }
-            subheader={displayDate}
+            subheader={formatDate(post.created_at)}
           />
           <CardMedia
             className={classes.media}

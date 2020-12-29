@@ -9,6 +9,7 @@ export interface IComment {
   user_id: number;
   comment: string;
   user?: IUser;
+  created_at: string;
 }
 
 export interface IImage {
@@ -21,7 +22,7 @@ export interface IPost {
   content: string;
   user_id: number;
   username: string;
-  created_at: Date;
+  created_at: string;
   likes: Array<ILike>;
   image?: IImage;
   comments: Array<IComment>;
