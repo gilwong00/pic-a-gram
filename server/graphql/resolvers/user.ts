@@ -47,7 +47,6 @@ class UserResolver {
     @Ctx() { req }: Context
   ): Promise<User> {
     try {
-      console.log('sdfsdf');
       const query = usernameOrEmail.includes('@')
         ? { where: { email: usernameOrEmail } }
         : { where: { username: usernameOrEmail } };

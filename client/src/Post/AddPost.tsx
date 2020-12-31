@@ -76,7 +76,6 @@ const AddPost = () => {
     CREATE_POST,
     {
       update(cache: ApolloCache<any>, { data }) {
-        console.log('create', data);
         cache.modify({
           fields: {
             posts(
